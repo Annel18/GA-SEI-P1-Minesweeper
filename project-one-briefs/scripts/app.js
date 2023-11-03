@@ -2,10 +2,13 @@
 const grid = document.querySelector('.grid')
 const gridContainer = document.querySelector('.grid-container')
 const levelButtons = document.getElementsByClassName('levels')
-const cells = []
+const resetButton = document.querySelector('#reset')
+const timeDisplay = document.querySelector('#time')
+let cells = []
 
 //! Variables
 let gameActive = false
+let time = 0
 
 const levels = [
   { difficulty: 'easy', bombsNbr: 6, width: 6, height: 6 },
@@ -18,62 +21,77 @@ const level = {
 
 let width = levels[0].width
 let height = levels[0].height
-let cellCount = levels[0] * height
-let bombsNbr = levels[0].bombsNbr
+let cellCount = width * height
+let bombsNbr = 0
 let interval
 
 //! Grid
 
 function resetVariables() {
   clearInterval(interval)
-  width = levels[0].width
-  height = levels[0].height
-  cellCount = levels[0] * height
-  bombsNbr = levels[0].bombsNbr
+  width = 0
+  height = 0
+  cellCount = 0
+  bombsNbr = 0
+  time = 0
+  cells = []
+  cells.slice(0)
+  gameActive = false
 }
 
-function createGrid(evt) {
-  if (!gameActive) {
-    resetVariables()
-    gameActive = true
-    // if (evt.target.classList.contains('easy')) {
-    // level.bombsNbr = levels[0].bombsNbr
-    // level.width = levels[0].width
-    // level.height = levels[0].height
-    // } 
-    // if (evt.target.classList.contains('hard')) {
-    //   level.bombsNbr = levels[1].bombsNbr
-    //   level.width = levels[1].width
-    //   level.height = levels[1].height
-    // } else if (evt.target.classList.contains('expert')) {
-    //   level.bombsNbr = levels[2].bombsNbr
-    //   level.width = levels[2].width
-    //   level.height = levels[2].height
-    // } else {
+function createGrid() {
+  for (let i = 0; i < cellCount; i++) {
+    const cell = document.createElement('div')
+    cell.style.width = `${100 / width}%`
+    cell.style.height = `${100 / height}%`
+    cell.innerText = i
+    grid.append(cell)
+    cells.push(cell)
+    cell.classList.add('cell')
+  }
+  //   mineField()
+}
+
+function updateGrid(evt) {
+  resetVariables()
+  gameActive = true
+  if (evt.target.classList.contains('easy')) {
     level.bombsNbr = levels[0].bombsNbr
     level.width = levels[0].width
     level.height = levels[0].height
-    // }
-    width = level.width
-    height = level.height
-    cellCount = width * height
-    bombsNbr = level.bombsNbr
-    console.log(cellCount)
-
-    for (let i = 0; i < cellCount; i++) {
-      const cell = document.createElement('div')
-      cell.style.width = `${100 / width}%`
-      cell.style.height = `${100 / height}%`
-      // if (evt.target.classList.contains('expert')) {
-      //   grid.style.width = '600px'
-      // }
-      cell.innerText = i
-      grid.append(cell)
-      cells.push(cell)
-    }
-    mineField()
   }
+  if (evt.target.classList.contains('hard')) {
+    level.bombsNbr = levels[1].bombsNbr
+    level.width = levels[1].width
+    level.height = levels[1].height
+  } else if (evt.target.classList.contains('expert')) {
+    level.bombsNbr = levels[2].bombsNbr
+    level.width = levels[2].width
+    level.height = levels[2].height
+  }
+  width = level.width
+  height = level.height
+  cellCount = width * height
+  bombsNbr = level.bombsNbr
+
+  grid.replaceChildren()
+  for (let i = 0; i < cellCount; i++) {
+    const cell = document.createElement('div')
+    cell.style.width = `${100 / width}%`
+    cell.style.height = `${100 / height}%`
+    if (evt.target.classList.contains('expert')) {
+      grid.style.width = '600px'
+    } else {
+      grid.style.width = '300px'
+    }
+    cell.innerText = i
+    grid.append(cell)
+    cells.push(cell)
+    cell.classList.add('cell')
+  }
+  mineField()
 }
+
 
 function mineField() {
   const bombsArray = []
@@ -83,26 +101,54 @@ function mineField() {
       const index = Math.floor(Math.random() * cellCount)
       bombsArray.push(index)
       hotSpots = bombsArray.filter((value, index) => bombsArray.indexOf(value) === index)
-      console.log(hotSpots)
+      // console.log(hotSpots)
       cells[index].classList.add('bomb')
+      // return cells
     }
   }
 }
 
+function startTime() {
+  clearInterval(interval)
+  interval = setInterval(() => {
+    time++
+    timeDisplay.innerText = time
+  }, 1000)
+  reveal()
+}
+
+function clearAllInterval() {
+}
+
+
+const blocks = document.querySelectorAll('.cell') //! unsure if needed
+console.log(blocks)
+
 function reveal(event) {
+  // startTime()
+  console.log(event.target)
   if (event.target.classList.contains('bomb')) {
     event.target.classList.remove('bomb')
   }
 }
 
+
 //! Events
 for (const button of levelButtons) {
-  button.addEventListener('click', createGrid)
+  button.addEventListener('click', updateGrid)
 }
 
+resetButton.addEventListener('click', resetVariables)
+
+console.log(cells)
 for (const cell of cells) {
-  cell.addEventListener('click', reveal)
+  cell.addEventListener('click', startTime)
 }
+
+// cells.forEach(function (cell) {
+//   console.log(cell)
+//   cell.addEventListener('righ-click', flag)
+// })
 
 
 //! Page Load
