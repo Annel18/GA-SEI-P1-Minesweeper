@@ -1,0 +1,87 @@
+* {
+  box-sizing: border-box;
+  border: 1px solid gray;
+}
+
+body {
+  margin: 0;
+}
+
+header {
+  display: flex;
+  justify-content: space-evenly;
+  height: calc(100vh / 5);
+  padding: 1em;
+}
+
+h1 {
+  font-size: 1em;
+  text-align: center;
+}
+
+header div {
+  display: flex;
+  flex-direction: column;
+  padding-left: 5em;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  height: calc(100vh * 5 / 6 - 3em);
+  min-height: 400px;
+}
+
+.side1,
+.side2 {
+  width: 5em;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: calc(100vw - 10em);
+}
+
+.hero {
+  display: flex;
+  justify-content: space-evenly;
+  height: 10%;
+  padding: 1em;
+}
+
+.grid-container {
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* padding: 1em; */
+}
+
+.grid {
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+  height: 300px;
+  width: 300px;
+  /* aspect-ratio: 1; */
+  padding: 0;
+}
+
+.grid div {
+  border: 1px solid lightgrey;
+  display: inline-block;
+}
+
+footer {
+  height: 3em;
+  display: flex;
+  justify-content: space-around;
+}
+
+
+.bomb {
+  background-image: url('../images/mole.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
