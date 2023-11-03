@@ -22,7 +22,7 @@ const level = {
 let width = levels[0].width
 let height = levels[0].height
 let cellCount = width * height
-let bombsNbr = 0
+let bombsNbr = levels[0].bombsNbr
 let interval
 
 //! Grid
@@ -48,8 +48,9 @@ function createGrid() {
     grid.append(cell)
     cells.push(cell)
     cell.classList.add('cell')
+    eventsOnCells()
   }
-  //   mineField()
+  mineField()
 }
 
 function updateGrid(evt) {
@@ -88,6 +89,7 @@ function updateGrid(evt) {
     grid.append(cell)
     cells.push(cell)
     cell.classList.add('cell')
+    eventsOnCells()
   }
   mineField()
 }
@@ -108,21 +110,19 @@ function mineField() {
   }
 }
 
-function startTime() {
+function startTime(event) {
+  console.log(event.target)
   clearInterval(interval)
   interval = setInterval(() => {
     time++
     timeDisplay.innerText = time
   }, 1000)
-  reveal()
+  reveal(event)
 }
 
 function clearAllInterval() {
 }
 
-
-const blocks = document.querySelectorAll('.cell') //! unsure if needed
-console.log(blocks)
 
 function reveal(event) {
   // startTime()
@@ -132,23 +132,25 @@ function reveal(event) {
   }
 }
 
+function addFlag(event){
+  event.target.classList.add('flag')
+}
+
 
 //! Events
 for (const button of levelButtons) {
   button.addEventListener('click', updateGrid)
 }
 
-resetButton.addEventListener('click', resetVariables)
-
-console.log(cells)
-for (const cell of cells) {
-  cell.addEventListener('click', startTime)
+function eventsOnCells() {
+  for (const cell of cells) {
+    cell.addEventListener('click', startTime)
+    cell.addEventListener('contextmenu', addFlag)
+  }
 }
 
-// cells.forEach(function (cell) {
-//   console.log(cell)
-//   cell.addEventListener('righ-click', flag)
-// })
+resetButton.addEventListener('click', resetVariables)
+
 
 
 //! Page Load
