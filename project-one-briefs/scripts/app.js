@@ -102,22 +102,24 @@ function updateGrid(evt) {
   }
 
   mineField()
+
   cells.forEach(function (index) {
     if (index.classList.contains('bomb')) {
       index.classList.remove('nbr')
     }
+    if (index.classList.contains('nbr')) {
+      const cellsArray = []
+      for (let i = 0; i < cellCount; i++) {
+        cellsArray.push(i)
+        dangerNbr(index)
+      }
+    }
   })
 
-  const cellsArray = []
-  for (let index = 0; index < cellCount; index++) {
-    cellsArray.push(index)
-    dangerNbr(index)
-  }
-  console.log(cellsArray)
 }
 
 function dangerNbr(index) {
-  let dangerCount = 0
+  // let dangerCount = 0
   // for (let index = 0; index < cellCount; index++) {
   const cellQuery1 = index - width - 1
   const cellQuery2 = index - width
@@ -129,17 +131,31 @@ function dangerNbr(index) {
   const cellQuery8 = index - 1
 
   // }
-
+  // if (cells[cellQuery1].classList.contains('bomb')) {
+  //   dangerCount++
+  // }
+  // if (cells[cellQuery2].classList.contains('bomb')) {
+  //   dangerCount++
+  // }
+  // if (cells[cellQuery3].classList.contains('bomb')) {
+  //   dangerCount++
+  // }
   // if (cells[cellQuery4].classList.contains('bomb')) {
   //   dangerCount++
-  // }  
+  // }
   // if (cells[cellQuery5].classList.contains('bomb')) {
   //   dangerCount++
-  // }  
+  // }
   // if (cells[cellQuery6].classList.contains('bomb')) {
   //   dangerCount++
   // }
-  cells[index].innerText = dangerCount
+  // if (cells[cellQuery7].classList.contains('bomb')) {
+  //   dangerCount++
+  // }
+  // if (cells[cellQuery8].classList.contains('bomb')) {
+  //   dangerCount++
+  // }
+  // cells[index].innerText = dangerCount
 }
 
 function mineField() {
