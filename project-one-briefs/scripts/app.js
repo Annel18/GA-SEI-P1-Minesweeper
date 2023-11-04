@@ -51,6 +51,12 @@ function createGrid() {
     eventsOnCells()
   }
   mineField()
+  cells.forEach(function (index) {
+    if (index.classList.contains('bomb')) {
+      index.classList.remove('nbr')
+    }
+
+  })
 }
 
 
@@ -93,13 +99,47 @@ function updateGrid(evt) {
     cells.push(cell)
     cell.classList.add('cell')
     eventsOnCells()
-    /* WHY IS THIS NOT HAVING ANY EFFECT
-    while (cells[i].classList.contains('bomb nbr') || cells[i].classList.contains('nbr bomb')) {
-      cells[i].classList.remove('nbr')
-    } */
   }
 
   mineField()
+  cells.forEach(function (index) {
+    if (index.classList.contains('bomb')) {
+      index.classList.remove('nbr')
+    }
+  })
+
+  const cellsArray = []
+  for (let index = 0; index < cellCount; index++) {
+    cellsArray.push(index)
+    dangerNbr(index)
+  }
+  console.log(cellsArray)
+}
+
+function dangerNbr(index) {
+  let dangerCount = 0
+  // for (let index = 0; index < cellCount; index++) {
+  const cellQuery1 = index - width - 1
+  const cellQuery2 = index - width
+  const cellQuery3 = index - width + 1
+  const cellQuery4 = index + 1
+  const cellQuery5 = index + width + 1
+  const cellQuery6 = index + width
+  const cellQuery7 = index + width - 1
+  const cellQuery8 = index - 1
+
+  // }
+
+  // if (cells[cellQuery4].classList.contains('bomb')) {
+  //   dangerCount++
+  // }  
+  // if (cells[cellQuery5].classList.contains('bomb')) {
+  //   dangerCount++
+  // }  
+  // if (cells[cellQuery6].classList.contains('bomb')) {
+  //   dangerCount++
+  // }
+  cells[index].innerText = dangerCount
 }
 
 function mineField() {
@@ -112,12 +152,12 @@ function mineField() {
       hotSpots = bombsArray.filter((value, index) => bombsArray.indexOf(value) === index)
       // console.log(hotSpots)
       cells[index].classList.add('bomb')
-      dangerNbr(index)
+      dangerField(index)
     }
   }
 }
 
-function dangerNbr(index) {
+function dangerField(index) {
   const cellQuery1 = index - width - 1
   const cellQuery2 = index - width
   const cellQuery3 = index - width + 1
@@ -126,6 +166,7 @@ function dangerNbr(index) {
   const cellQuery6 = index + width
   const cellQuery7 = index + width - 1
   const cellQuery8 = index - 1
+
   if (index < width && index % height === 0) { // console.log('topLeftCorner: ' + index)
     cells[cellQuery4].classList.add('nbr')
     cells[cellQuery5].classList.add('nbr')
