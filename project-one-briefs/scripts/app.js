@@ -70,7 +70,7 @@ function createGrid() {
       dangerZone.push(index)
     }
   })
-  console.log(dangerZone)
+  // console.log(dangerZone)
 }
 
 function updateGrid(evt) {
@@ -171,7 +171,6 @@ function reveal(event) {
   const cellClicked = event.target
   if (cellClicked.classList.contains('bomb')) {
     const allBombs = document.querySelectorAll('.bomb')
-    console.log(allBombs)
     allBombs.forEach(function (item) {
       item.classList.replace('bomb', 'bombClicked')
       clearInterval(interval)
@@ -186,42 +185,46 @@ function reveal(event) {
 
 
 function openEmptyBubbles(cellClicked) {
-  const NW = cells.indexOf(cellClicked) - width - 1
-  const N = cells.indexOf(cellClicked) - width
-  const NE = cells.indexOf(cellClicked) - width + 1
-  const E = cells.indexOf(cellClicked) + 1
-  const SE = cells.indexOf(cellClicked) + width + 1
-  const S = cells.indexOf(cellClicked) + width
-  const SW = cells.indexOf(cellClicked) + width - 1
-  const W = cells.indexOf(cellClicked) - 1
+  const cellClickedIndex = cells.indexOf(cellClicked)
+  const NW = cellClickedIndex - width - 1
+  const N = cellClickedIndex - width
+  const NE = cellClickedIndex - width + 1
+  const E = cellClickedIndex + 1
+  const SE = cellClickedIndex + width + 1
+  const S = cellClickedIndex + width
+  const SW = cellClickedIndex + width - 1
+  const W = cellClickedIndex - 1
 
 
-  if (!cells[NW].classList.contains('bomb') && !cells[NW].classList.contains('nbr')){
-    cells[NW].classList.add('cellClicked')
-  }
-  if (!cells[N].classList.contains('bomb') && !cells[N].classList.contains('nbr')){
-    cells[N].classList.add('cellClicked')
-  }
-  if (!cells[NE].classList.contains('bomb') && !cells[NE].classList.contains('nbr')){
-    cells[NE].classList.add('cellClicked')
-  }
-  if (!cells[E].classList.contains('bomb') && !cells[E].classList.contains('nbr')){
-    cells[E].classList.add('cellClicked')
-  }
-  if (!cells[SE].classList.contains('bomb') && !cells[SE].classList.contains('nbr')){
-    cells[SE].classList.add('cellClicked')
-  }
-  if (!cells[S].classList.contains('bomb') && !cells[S].classList.contains('nbr')){
-    cells[S].classList.add('cellClicked')
-  }
-  if (!cells[SW].classList.contains('bomb') && !cells[SW].classList.contains('nbr')){
-    cells[SW].classList.add('cellClicked')
-  }
-  if (!cells[W].classList.contains('bomb') && !cells[W].classList.contains('nbr')){
-    cells[W].classList.add('cellClicked')
+  function openAdjacentCells(query) {
+    while (!cells[query].classList.contains('bomb')
+      && !cells[query].classList.contains('nbr')
+      && !cells[query].classList.contains('cellClicked')) {
+      cells[query].classList.add('cellClicked')
+    }
   }
 
-
+  // for (let i = 0; i < 8; i++) {
+  if (cellClickedIndex < width && cellClickedIndex % height === 0) { // console.log('topLeftCorner: ' + cellClickedIndex)
+    [E, S].forEach(openAdjacentCells)
+  } else if (cellClickedIndex < width && (cellClickedIndex + 1) % height === 0) { // console.log('topRigtCorner: ' + cellClickedIndex)
+    [S, W].forEach(openAdjacentCells)
+  } else if (cellClickedIndex >= cellCount - width && (cellClickedIndex + 1) % height === 0) { // console.log('bottomRigtCorner: ' + cellClickedIndex)
+    [N, W].forEach(openAdjacentCells)
+  } else if (cellClickedIndex >= cellCount - width && cellClickedIndex % height === 0) { // console.log('bottomLeftCorner: ' + cellClickedIndex)
+    [N, E].forEach(openAdjacentCells)
+  } else if (cellClickedIndex < width) { // console.log('first row: ' + cellClickedIndex)
+    [E, S, W].forEach(openAdjacentCells)
+  } else if (cellClickedIndex >= cellCount - width) { // console.log('last row: ' + cellClickedIndex)
+    [N, E, W].forEach(openAdjacentCells)
+  } else if (cellClickedIndex % height === 0) { // console.log('first column: ' + cellClickedIndex)
+    [N, E, S].forEach(openAdjacentCells)
+  } else if ((cellClickedIndex + 1) % height === 0) { // console.log('last column: ' + cellClickedIndex)
+    [N, S, W].forEach(openAdjacentCells)
+  } else { // console.log('midField: ' + cellClickedIndex)
+    [N, E, S, W].forEach(openAdjacentCells)
+  }
+  // }
 }
 
 
