@@ -8,8 +8,8 @@ let cells = []
 const dangerZone = []
 
 //! Variables
-// let gameActive = false
-let time = 0
+let gameActive = false
+let time
 
 const levels = [
   { difficulty: 'easy', bombsNbr: 6, width: 6, height: 6 },
@@ -31,20 +31,21 @@ function resetVariables() {
   clearInterval(interval)
   grid.replaceChildren()
   cells = []
-  // width = 0
-  // height = 0
-  // cellCount = 0
-  // bombsNbr = 0
-  // time = 0
+  // width = levelChoice.width
+  // height = levelChoice.height
+  // bombsNbr = levelChoice.bombsNbr
+  // cellCount = width * height
+  time = 0
+  timeDisplay.innerText = time
   // cells.slice(0)
-  // gameActive = false
+  gameActive = false
 }
 
 //! Execution
 
 function createGrid() {
   resetVariables()
-  // replace this with logic from below
+  gameActive = true
   grid.replaceChildren()
   for (let i = 0; i < cellCount; i++) {
     const cell = document.createElement('div')
@@ -164,8 +165,8 @@ function startTime(event) {
   reveal(event)
 }
 
-// function clearAllInterval() {
-// }
+function clearAllInterval() {
+}
 
 function reveal(event) {
   const cellClicked = event.target
@@ -204,7 +205,6 @@ function openEmptyBubbles(cellClicked) {
     }
   }
 
-  // for (let i = 0; i < 8; i++) {
   if (cellClickedIndex < width && cellClickedIndex % height === 0) { // console.log('topLeftCorner: ' + cellClickedIndex)
     [E, S].forEach(openAdjacentCells)
   } else if (cellClickedIndex < width && (cellClickedIndex + 1) % height === 0) { // console.log('topRigtCorner: ' + cellClickedIndex)
@@ -224,7 +224,8 @@ function openEmptyBubbles(cellClicked) {
   } else { // console.log('midField: ' + cellClickedIndex)
     [N, E, S, W].forEach(openAdjacentCells)
   }
-  // }
+
+
 }
 
 
@@ -245,7 +246,7 @@ function eventsOnCells() {
   }
 }
 
-resetButton.addEventListener('click', resetVariables)
+resetButton.addEventListener('click', updateGrid)
 
 
 
