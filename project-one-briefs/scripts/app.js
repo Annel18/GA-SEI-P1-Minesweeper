@@ -50,13 +50,12 @@ function createGrid() {
     cell.classList.add('cell')
     eventsOnCells()
   }
-  mineField()
-  cells.forEach(function (index) {
-    if (index.classList.contains('bomb')) {
-      index.classList.remove('nbr')
-    }
-
-  })
+  // mineField()
+  // cells.forEach(function (index) {
+  //   if (index.classList.contains('bomb')) {
+  //     index.classList.remove('nbr')
+  //   }
+  // })
 }
 
 
@@ -85,7 +84,7 @@ function updateGrid(evt) {
   bombsNbr = levelChoice.bombsNbr
 
   grid.replaceChildren()
-  for (let i = 0; i < cellCount; i++) {
+  for (let index = 0; index < cellCount; index++) {
     const cell = document.createElement('div')
     cell.style.width = `${100 / width}%`
     cell.style.height = `${100 / height}%`
@@ -100,27 +99,35 @@ function updateGrid(evt) {
     cell.classList.add('cell')
     eventsOnCells()
   }
-
   mineField()
+
+  for (let index = 0; index < cellCount; index++) {
+    dangerNbr(index)
+  }
+
 
   cells.forEach(function (index) {
     if (index.classList.contains('bomb')) {
       index.classList.remove('nbr')
     }
-    if (index.classList.contains('nbr')) {
-      const cellsArray = []
-      for (let i = 0; i < cellCount; i++) {
-        cellsArray.push(i)
-        dangerNbr(index)
-      }
-    }
+    // if (index.classList.contains('nbr')) {
+    // const cellsArray = []
+    // for (let i = 0; i < cellsArray.length; i++) {
+    //   cellsArray.push(i)
+    //   cellsArray[i].innerText = '0'
+    // }
+    //   dangerNbr(index)
+    // } 
   })
 
 }
 
 function dangerNbr(index) {
-  // let dangerCount = 0
-  // for (let index = 0; index < cellCount; index++) {
+  console.log(`cell ${index} is ${cells[index]}`)
+  console.log(cells[index])
+  console.log(cells[index].classList.contains('bomb'))
+  let dangerCount = 0
+
   const cellQuery1 = index - width - 1
   const cellQuery2 = index - width
   const cellQuery3 = index - width + 1
@@ -130,32 +137,139 @@ function dangerNbr(index) {
   const cellQuery7 = index + width - 1
   const cellQuery8 = index - 1
 
-  // }
-  // if (cells[cellQuery1].classList.contains('bomb')) {
-  //   dangerCount++
-  // }
-  // if (cells[cellQuery2].classList.contains('bomb')) {
-  //   dangerCount++
-  // }
-  // if (cells[cellQuery3].classList.contains('bomb')) {
-  //   dangerCount++
-  // }
-  // if (cells[cellQuery4].classList.contains('bomb')) {
-  //   dangerCount++
-  // }
-  // if (cells[cellQuery5].classList.contains('bomb')) {
-  //   dangerCount++
-  // }
-  // if (cells[cellQuery6].classList.contains('bomb')) {
-  //   dangerCount++
-  // }
-  // if (cells[cellQuery7].classList.contains('bomb')) {
-  //   dangerCount++
-  // }
-  // if (cells[cellQuery8].classList.contains('bomb')) {
-  //   dangerCount++
-  // }
-  // cells[index].innerText = dangerCount
+
+  if (index < width && index % height === 0) { // console.log('topLeftCorner: ' + index)
+    if (cells[cellQuery4].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery5].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery6].classList.contains('bomb')) {
+      dangerCount++
+    }
+  } else if (index < width && (index + 1) % height === 0) { // console.log('topRigtCorner: ' + index)
+    if (cells[cellQuery6].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery7].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery8].classList.contains('bomb')) {
+      dangerCount++
+    }
+  } else if (index >= cellCount - width && (index + 1) % height === 0) { // console.log('bottomRigtCorner: ' + index)
+    if (cells[cellQuery1].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery2].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery8].classList.contains('bomb')) {
+      dangerCount++
+    }
+  } else if (index >= cellCount - width && index % height === 0) { // console.log('bottomLeftCorner: ' + index)
+    if (cells[cellQuery2].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery3].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery4].classList.contains('bomb')) {
+      dangerCount++
+    }
+  } else if (index < width) { // console.log('first row: ' + index)
+    if (cells[cellQuery4].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery5].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery6].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery7].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery8].classList.contains('bomb')) {
+      dangerCount++
+    }
+  } else if (index >= cellCount - width) { // console.log('last row: ' + index)
+    if (cells[cellQuery1].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery2].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery3].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery4].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery8].classList.contains('bomb')) {
+      dangerCount++
+    }
+  } else if (index % height === 0) { // console.log('first column: ' + index)
+    if (cells[cellQuery2].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery3].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery4].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery5].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery6].classList.contains('bomb')) {
+      dangerCount++
+    }
+  } else if ((index + 1) % height === 0) { // console.log('last column: ' + index)
+    if (cells[cellQuery1].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery2].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery6].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery7].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery8].classList.contains('bomb')) {
+      dangerCount++
+    }
+  } else { // console.log('midField: ' + index)
+
+    if (cells[cellQuery1].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery2].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery3].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery4].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery5].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery6].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery7].classList.contains('bomb')) {
+      dangerCount++
+    }
+    if (cells[cellQuery8].classList.contains('bomb')) {
+      dangerCount++
+    }
+  }
+  cells[index].innerText = dangerCount
 }
 
 function mineField() {
@@ -168,12 +282,15 @@ function mineField() {
       hotSpots = bombsArray.filter((value, index) => bombsArray.indexOf(value) === index)
       // console.log(hotSpots)
       cells[index].classList.add('bomb')
-      dangerField(index)
+      // dangerField(index)
     }
   }
 }
 
 function dangerField(index) {
+  console.log(`cell ${index} is ${cells[index]}`)
+  console.log(cells[index])
+  console.log(cells[index].classList.contains('bomb'))
   const cellQuery1 = index - width - 1
   const cellQuery2 = index - width
   const cellQuery3 = index - width + 1
