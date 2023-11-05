@@ -195,16 +195,33 @@ function openEmptyBubbles(cellClicked) {
   const SW = cells.indexOf(cellClicked) + width - 1
   const W = cells.indexOf(cellClicked) - 1
 
-  // NW.classList.add('cellClicked')
-  console.log('cellClicked ' + cells.indexOf(cellClicked))
-  console.log('NW of cellClicked ' + NW)
-  console.log('N of cellClicked ' + N)
-  console.log('NE of cellClicked ' + NE)
-  console.log('E of cellClicked ' + E)
-  console.log('SE of cellClicked ' + SE)
-  console.log('S of cellClicked ' + S)
-  console.log('SW of cellClicked ' + SW)
-  console.log('W of cellClicked ' + W)
+
+  if (!cells[NW].classList.contains('bomb') && !cells[NW].classList.contains('nbr')){
+    cells[NW].classList.add('cellClicked')
+  }
+  if (!cells[N].classList.contains('bomb') && !cells[N].classList.contains('nbr')){
+    cells[N].classList.add('cellClicked')
+  }
+  if (!cells[NE].classList.contains('bomb') && !cells[NE].classList.contains('nbr')){
+    cells[NE].classList.add('cellClicked')
+  }
+  if (!cells[E].classList.contains('bomb') && !cells[E].classList.contains('nbr')){
+    cells[E].classList.add('cellClicked')
+  }
+  if (!cells[SE].classList.contains('bomb') && !cells[SE].classList.contains('nbr')){
+    cells[SE].classList.add('cellClicked')
+  }
+  if (!cells[S].classList.contains('bomb') && !cells[S].classList.contains('nbr')){
+    cells[S].classList.add('cellClicked')
+  }
+  if (!cells[SW].classList.contains('bomb') && !cells[SW].classList.contains('nbr')){
+    cells[SW].classList.add('cellClicked')
+  }
+  if (!cells[W].classList.contains('bomb') && !cells[W].classList.contains('nbr')){
+    cells[W].classList.add('cellClicked')
+  }
+
+
 }
 
 
