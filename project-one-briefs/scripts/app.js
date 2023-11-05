@@ -7,7 +7,7 @@ const timeDisplay = document.querySelector('#time')
 let cells = []
 
 //! Variables
-let gameActive = false
+// let gameActive = false
 let time = 0
 
 const levels = [
@@ -16,8 +16,7 @@ const levels = [
   { difficulty: 'expert', bombsNbr: 48, width: 24, height: 12 }
 ]
 
-const levelChoice = {
-}
+let levelChoice 
 
 let width = levels[0].width
 let height = levels[0].height
@@ -29,70 +28,27 @@ let interval
 
 function resetVariables() {
   clearInterval(interval)
-  width = 0
-  height = 0
-  cellCount = 0
-  bombsNbr = 0
-  time = 0
+  grid.replaceChildren()
   cells = []
-  cells.slice(0)
-  gameActive = false
+  // width = 0
+  // height = 0
+  // cellCount = 0
+  // bombsNbr = 0
+  // time = 0
+  // cells.slice(0)
+  // gameActive = false
 }
 
+//! Execution
+
 function createGrid() {
+  resetVariables()
+  // replace this with logic from below
+  grid.replaceChildren()
   for (let i = 0; i < cellCount; i++) {
     const cell = document.createElement('div')
     cell.style.width = `${100 / width}%`
     cell.style.height = `${100 / height}%`
-    cell.innerText = i
-    grid.append(cell)
-    cells.push(cell)
-    cell.classList.add('cell')
-    eventsOnCells()
-  }
-  // mineField()
-  // cells.forEach(function (index) {
-  //   if (index.classList.contains('bomb')) {
-  //     index.classList.remove('nbr')
-  //   }
-  // })
-}
-
-
-//! Execution
-
-function updateGrid(evt) {
-  resetVariables()
-  gameActive = true
-  if (evt.target.classList.contains('easy')) {
-    levelChoice.bombsNbr = levels[0].bombsNbr
-    levelChoice.width = levels[0].width
-    levelChoice.height = levels[0].height
-  }
-  if (evt.target.classList.contains('hard')) {
-    levelChoice.bombsNbr = levels[1].bombsNbr
-    levelChoice.width = levels[1].width
-    levelChoice.height = levels[1].height
-  } else if (evt.target.classList.contains('expert')) {
-    levelChoice.bombsNbr = levels[2].bombsNbr
-    levelChoice.width = levels[2].width
-    levelChoice.height = levels[2].height
-  }
-  width = levelChoice.width
-  height = levelChoice.height
-  cellCount = width * height
-  bombsNbr = levelChoice.bombsNbr
-
-  grid.replaceChildren()
-  for (let index = 0; index < cellCount; index++) {
-    const cell = document.createElement('div')
-    cell.style.width = `${100 / width}%`
-    cell.style.height = `${100 / height}%`
-    if (evt.target.classList.contains('expert')) {
-      grid.style.width = '600px'
-    } else {
-      grid.style.width = '300px'
-    }
     cell.innerText = '-'
     grid.append(cell)
     cells.push(cell)
@@ -101,260 +57,100 @@ function updateGrid(evt) {
   }
   mineField()
 
-  for (let index = 0; index < cellCount; index++) {
-    dangerNbr(index)
+  for (let cell = 0; cell < cellCount; cell++) {
+    dangerNbr(cell)
   }
-
 
   cells.forEach(function (index) {
     if (index.classList.contains('bomb')) {
       index.classList.remove('nbr')
     }
-    // if (index.classList.contains('nbr')) {
-    // const cellsArray = []
-    // for (let i = 0; i < cellsArray.length; i++) {
-    //   cellsArray.push(i)
-    //   cellsArray[i].innerText = '0'
-    // }
-    //   dangerNbr(index)
-    // } 
   })
+}
+
+function updateGrid(evt) {
+  resetVariables()
+  // gameActive = true
+  if (evt.target.classList.contains('easy')) {
+    levelChoice = levels[0]
+  } else if (evt.target.classList.contains('hard')) {
+    levelChoice = levels[1]
+  } else if (evt.target.classList.contains('expert')) {
+    levelChoice = levels[2]
+  }
+  width = levelChoice.width
+  height = levelChoice.height
+  cellCount = width * height
+  bombsNbr = levelChoice.bombsNbr
+
+  createGrid()
+
+  if (evt.target.classList.contains('expert')) {
+    grid.style.width = '600px'
+  } else {
+    grid.style.width = '300px'
+  }
 
 }
 
-function dangerNbr(index) {
-  console.log(`cell ${index} is ${cells[index]}`)
-  console.log(cells[index])
-  console.log(cells[index].classList.contains('bomb'))
+function dangerNbr(cell) {
   let dangerCount = 0
 
-  const cellQuery1 = index - width - 1
-  const cellQuery2 = index - width
-  const cellQuery3 = index - width + 1
-  const cellQuery4 = index + 1
-  const cellQuery5 = index + width + 1
-  const cellQuery6 = index + width
-  const cellQuery7 = index + width - 1
-  const cellQuery8 = index - 1
+  const NW = cell - width - 1
+  const N = cell - width
+  const NE = cell - width + 1
+  const E = cell + 1
+  const SE = cell + width + 1
+  const S = cell + width
+  const SW = cell + width - 1
+  const W = cell - 1
 
-
-  if (index < width && index % height === 0) { // console.log('topLeftCorner: ' + index)
-    if (cells[cellQuery4].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery5].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery6].classList.contains('bomb')) {
-      dangerCount++
-    }
-  } else if (index < width && (index + 1) % height === 0) { // console.log('topRigtCorner: ' + index)
-    if (cells[cellQuery6].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery7].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery8].classList.contains('bomb')) {
-      dangerCount++
-    }
-  } else if (index >= cellCount - width && (index + 1) % height === 0) { // console.log('bottomRigtCorner: ' + index)
-    if (cells[cellQuery1].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery2].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery8].classList.contains('bomb')) {
-      dangerCount++
-    }
-  } else if (index >= cellCount - width && index % height === 0) { // console.log('bottomLeftCorner: ' + index)
-    if (cells[cellQuery2].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery3].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery4].classList.contains('bomb')) {
-      dangerCount++
-    }
-  } else if (index < width) { // console.log('first row: ' + index)
-    if (cells[cellQuery4].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery5].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery6].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery7].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery8].classList.contains('bomb')) {
-      dangerCount++
-    }
-  } else if (index >= cellCount - width) { // console.log('last row: ' + index)
-    if (cells[cellQuery1].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery2].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery3].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery4].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery8].classList.contains('bomb')) {
-      dangerCount++
-    }
-  } else if (index % height === 0) { // console.log('first column: ' + index)
-    if (cells[cellQuery2].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery3].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery4].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery5].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery6].classList.contains('bomb')) {
-      dangerCount++
-    }
-  } else if ((index + 1) % height === 0) { // console.log('last column: ' + index)
-    if (cells[cellQuery1].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery2].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery6].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery7].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery8].classList.contains('bomb')) {
-      dangerCount++
-    }
-  } else { // console.log('midField: ' + index)
-
-    if (cells[cellQuery1].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery2].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery3].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery4].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery5].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery6].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery7].classList.contains('bomb')) {
-      dangerCount++
-    }
-    if (cells[cellQuery8].classList.contains('bomb')) {
+  function updateDangerCount(query) {
+    if (cells[query].classList.contains('bomb')) {
       dangerCount++
     }
   }
-  cells[index].innerText = dangerCount
+
+  if (cell < width && cell % height === 0) { // console.log('topLeftCorner: ' + cell)
+    [E, SE, S].forEach(updateDangerCount)
+  } else if (cell < width && (cell + 1) % height === 0) { // console.log('topRigtCorner: ' + cell)
+    [S, SW, W].forEach(updateDangerCount)
+  } else if (cell >= cellCount - width && (cell + 1) % height === 0) { // console.log('bottomRigtCorner: ' + cell)
+    [NW, N, W].forEach(updateDangerCount)
+  } else if (cell >= cellCount - width && cell % height === 0) { // console.log('bottomLeftCorner: ' + cell)
+    [N, NE, E].forEach(updateDangerCount)
+  } else if (cell < width) { // console.log('first row: ' + cell)
+    [E, SE, S, SW, W].forEach(updateDangerCount)
+  } else if (cell >= cellCount - width) { // console.log('last row: ' + cell)
+    [NW, N, NE, E, W].forEach(updateDangerCount)
+  } else if (cell % height === 0) { // console.log('first column: ' + cell)
+    [N, NE, E, SE, S].forEach(updateDangerCount)
+  } else if ((cell + 1) % height === 0) { // console.log('last column: ' + cell)
+    [NW, N, S, SW, W].forEach(updateDangerCount)
+  } else { // console.log('midField: ' + cell)
+    [NW, N, NE, E, SE, S, SW, W].forEach(updateDangerCount)
+  }
+  cells[cell].innerText = dangerCount
+  if (cells[cell].innerText > 0) {
+    cells[cell].classList.add('nbr')
+  }
 }
 
 function mineField() {
   const bombsArray = []
-  let hotSpots = bombsArray.filter((value, index) => bombsArray.indexOf(value) === index)
+  let hotSpots = [] 
   for (let i = 0; i < bombsNbr; i++) {
     while (hotSpots.length < bombsNbr) {
       const index = Math.floor(Math.random() * cellCount)
       bombsArray.push(index)
+      // remove duplicates
       hotSpots = bombsArray.filter((value, index) => bombsArray.indexOf(value) === index)
-      // console.log(hotSpots)
       cells[index].classList.add('bomb')
-      // dangerField(index)
     }
   }
 }
 
-function dangerField(index) {
-  console.log(`cell ${index} is ${cells[index]}`)
-  console.log(cells[index])
-  console.log(cells[index].classList.contains('bomb'))
-  const cellQuery1 = index - width - 1
-  const cellQuery2 = index - width
-  const cellQuery3 = index - width + 1
-  const cellQuery4 = index + 1
-  const cellQuery5 = index + width + 1
-  const cellQuery6 = index + width
-  const cellQuery7 = index + width - 1
-  const cellQuery8 = index - 1
-
-  if (index < width && index % height === 0) { // console.log('topLeftCorner: ' + index)
-    cells[cellQuery4].classList.add('nbr')
-    cells[cellQuery5].classList.add('nbr')
-    cells[cellQuery6].classList.add('nbr')
-  } else if (index < width && (index + 1) % height === 0) { // console.log('topRigtCorner: ' + index)
-    cells[cellQuery6].classList.add('nbr')
-    cells[cellQuery7].classList.add('nbr')
-    cells[cellQuery8].classList.add('nbr')
-  } else if (index >= cellCount - width && (index + 1) % height === 0) { // console.log('bottomRigtCorner: ' + index)
-    cells[cellQuery1].classList.add('nbr')
-    cells[cellQuery2].classList.add('nbr')
-    cells[cellQuery8].classList.add('nbr')
-  } else if (index >= cellCount - width && index % height === 0) { // console.log('bottomLeftCorner: ' + index)
-    cells[cellQuery2].classList.add('nbr')
-    cells[cellQuery3].classList.add('nbr')
-    cells[cellQuery4].classList.add('nbr')
-  } else if (index < width) { // console.log('first row: ' + index)
-    cells[cellQuery4].classList.add('nbr')
-    cells[cellQuery5].classList.add('nbr')
-    cells[cellQuery6].classList.add('nbr')
-    cells[cellQuery7].classList.add('nbr')
-    cells[cellQuery8].classList.add('nbr')
-  } else if (index >= cellCount - width) { // console.log('last row: ' + index)
-    cells[cellQuery1].classList.add('nbr')
-    cells[cellQuery2].classList.add('nbr')
-    cells[cellQuery3].classList.add('nbr')
-    cells[cellQuery4].classList.add('nbr')
-    cells[cellQuery8].classList.add('nbr')
-  } else if (index % height === 0) { // console.log('first column: ' + index)
-    cells[cellQuery2].classList.add('nbr')
-    cells[cellQuery3].classList.add('nbr')
-    cells[cellQuery4].classList.add('nbr')
-    cells[cellQuery5].classList.add('nbr')
-    cells[cellQuery6].classList.add('nbr')
-  } else if ((index + 1) % height === 0) { // console.log('last column: ' + index)
-    cells[cellQuery1].classList.add('nbr')
-    cells[cellQuery2].classList.add('nbr')
-    cells[cellQuery6].classList.add('nbr')
-    cells[cellQuery7].classList.add('nbr')
-    cells[cellQuery8].classList.add('nbr')
-  } else { // console.log('midField: ' + index)
-    cells[cellQuery1].classList.add('nbr')
-    cells[cellQuery2].classList.add('nbr')
-    cells[cellQuery3].classList.add('nbr')
-    cells[cellQuery4].classList.add('nbr')
-    cells[cellQuery5].classList.add('nbr')
-    cells[cellQuery6].classList.add('nbr')
-    cells[cellQuery7].classList.add('nbr')
-    cells[cellQuery8].classList.add('nbr')
-  }
-}
-
-
 function startTime(event) {
-  console.log(event.target)
   clearInterval(interval)
   interval = setInterval(() => {
     time++
@@ -365,7 +161,6 @@ function startTime(event) {
 
 function clearAllInterval() {
 }
-
 
 function reveal(event) {
   // startTime()
