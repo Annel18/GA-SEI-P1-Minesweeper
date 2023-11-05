@@ -16,7 +16,7 @@ const levels = [
   { difficulty: 'expert', bombsNbr: 48, width: 24, height: 12 }
 ]
 
-let levelChoice 
+let levelChoice
 
 let width = levels[0].width
 let height = levels[0].height
@@ -138,7 +138,7 @@ function dangerNbr(cell) {
 
 function mineField() {
   const bombsArray = []
-  let hotSpots = [] 
+  let hotSpots = []
   for (let i = 0; i < bombsNbr; i++) {
     while (hotSpots.length < bombsNbr) {
       const index = Math.floor(Math.random() * cellCount)
@@ -159,14 +159,21 @@ function startTime(event) {
   reveal(event)
 }
 
-function clearAllInterval() {
-}
+// function clearAllInterval() {
+// }
 
 function reveal(event) {
-  // startTime()
-  console.log(event.target)
   if (event.target.classList.contains('bomb')) {
-    event.target.classList.remove('bomb')
+    const allBombs = document.querySelectorAll('.bomb')
+    console.log(allBombs)
+    allBombs.forEach(function (item) {
+      item.classList.replace('bomb', 'bombClicked')
+      clearInterval(interval)
+    })
+  } else if (event.target.classList.contains('nbr')) {
+    event.target.classList.replace('nbr', 'nbrClicked')
+  } else {
+    
   }
 }
 
