@@ -5,6 +5,7 @@ const levelButtons = document.getElementsByClassName('levels')
 const resetButton = document.querySelector('#reset')
 const timeDisplay = document.querySelector('#time')
 let cells = []
+const dangerZone = []
 
 //! Variables
 // let gameActive = false
@@ -65,7 +66,11 @@ function createGrid() {
     if (index.classList.contains('bomb')) {
       index.classList.remove('nbr')
     }
+    if (index.classList.contains('nbr')) {
+      dangerZone.push(index)
+    }
   })
+  console.log(dangerZone)
 }
 
 function updateGrid(evt) {
@@ -163,19 +168,45 @@ function startTime(event) {
 // }
 
 function reveal(event) {
-  if (event.target.classList.contains('bomb')) {
+  const cellClicked = event.target
+  if (cellClicked.classList.contains('bomb')) {
     const allBombs = document.querySelectorAll('.bomb')
     console.log(allBombs)
     allBombs.forEach(function (item) {
       item.classList.replace('bomb', 'bombClicked')
       clearInterval(interval)
     })
-  } else if (event.target.classList.contains('nbr')) {
-    event.target.classList.replace('nbr', 'nbrClicked')
+  } else if (cellClicked.classList.contains('nbr')) {
+    cellClicked.classList.replace('nbr', 'nbrClicked')
   } else {
-    
+    cellClicked.classList.add('cellClicked')
+    openEmptyBubbles(cellClicked)
   }
 }
+
+
+function openEmptyBubbles(cellClicked) {
+  const NW = cells.indexOf(cellClicked) - width - 1
+  const N = cells.indexOf(cellClicked) - width
+  const NE = cells.indexOf(cellClicked) - width + 1
+  const E = cells.indexOf(cellClicked) + 1
+  const SE = cells.indexOf(cellClicked) + width + 1
+  const S = cells.indexOf(cellClicked) + width
+  const SW = cells.indexOf(cellClicked) + width - 1
+  const W = cells.indexOf(cellClicked) - 1
+
+  // NW.classList.add('cellClicked')
+  console.log('cellClicked ' + cells.indexOf(cellClicked))
+  console.log('NW of cellClicked ' + NW)
+  console.log('N of cellClicked ' + N)
+  console.log('NE of cellClicked ' + NE)
+  console.log('E of cellClicked ' + E)
+  console.log('SE of cellClicked ' + SE)
+  console.log('S of cellClicked ' + S)
+  console.log('SW of cellClicked ' + SW)
+  console.log('W of cellClicked ' + W)
+}
+
 
 function addFlag(event) {
   event.target.classList.add('flag')

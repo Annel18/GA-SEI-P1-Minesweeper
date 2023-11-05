@@ -99,12 +99,14 @@ footer {
 }
 
 .nbrClicked {
-  color : blue;
-  /* background-image: url('../images/cat.png');
+  color : greenyellow;
+}
+
+.cellClicked {
+  background-image: url('../images/cat.png');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat; */
-  color : greenyellow;
+  background-repeat: no-repeat;
 }
 
 .bombClicked {
