@@ -17,12 +17,12 @@ const levels = [
   { difficulty: 'expert', bombsNbr: 48, width: 24, height: 12 }
 ]
 
-let levelChoice
+let levelChoice = levels[0]
 
-let width = levels[0].width
-let height = levels[0].height
+let width = levelChoice.width
+let height = levelChoice.height
 let cellCount = width * height
-let bombsNbr = levels[0].bombsNbr
+let bombsNbr = levelChoice.bombsNbr
 let interval
 
 //! Grid
@@ -31,14 +31,12 @@ function resetVariables() {
   clearInterval(interval)
   grid.replaceChildren()
   cells = []
-  // width = levelChoice.width
-  // height = levelChoice.height
-  // bombsNbr = levelChoice.bombsNbr
-  // cellCount = width * height
   time = 0
   timeDisplay.innerText = time
-  // cells.slice(0)
   gameActive = false
+
+
+
 }
 
 //! Execution
@@ -71,12 +69,18 @@ function createGrid() {
       dangerZone.push(index)
     }
   })
-  // console.log(dangerZone)
+
+  if (levelChoice === levels[2]) {
+    grid.style.width = '600px'
+  } else {
+    grid.style.width = '300px'
+  }
 }
 
 function updateGrid(evt) {
+  
   resetVariables()
-  // gameActive = true
+  gameActive = true
   if (evt.target.classList.contains('easy')) {
     levelChoice = levels[0]
   } else if (evt.target.classList.contains('hard')) {
@@ -91,11 +95,11 @@ function updateGrid(evt) {
 
   createGrid()
 
-  if (evt.target.classList.contains('expert')) {
-    grid.style.width = '600px'
-  } else {
-    grid.style.width = '300px'
-  }
+  // if (evt.target.classList.contains('expert')) {
+  //   grid.style.width = '600px'
+  // } else {
+  //   grid.style.width = '300px'
+  // }
 
 }
 
@@ -196,7 +200,6 @@ function openEmptyBubbles(cellClicked) {
   const SW = cellClickedIndex + width - 1
   const W = cellClickedIndex - 1
 
-
   function openAdjacentCells(query) {
     while (!cells[query].classList.contains('bomb')
       && !cells[query].classList.contains('nbr')
@@ -248,8 +251,5 @@ function eventsOnCells() {
 
 resetButton.addEventListener('click', updateGrid)
 
-
-
 //! Page Load
 createGrid()
-// mineField()
