@@ -219,12 +219,12 @@ function openEmptyBubbles(cellClicked) {
   }
 
   let field = new FieldTocCheck(cellClickedIndex)
-  const arrayToCheck = field.array(cellClickedIndex)
+  let arrayToCheck = field.array(cellClickedIndex)
   console.log('firsArray ' + arrayToCheck)
   console.log(arrayToCheck)
 
 
-  arrayToCheck.forEach(revealAdjacentCells)
+  arrayToCheck.forEach(extendFieldToCheck)
 
 
   function revealAdjacentCells(query) {
@@ -232,25 +232,24 @@ function openEmptyBubbles(cellClicked) {
       cells[query].classList.replace('nbr', 'nbrClicked')
     } else if (cells[query].classList.contains('safeZone')) {
       cells[query].classList.replace('safeZone', 'safeZoneClicked')
-      field = new FieldTocCheck(query)
-      arrayToCheck.push(field.array(query))
-      console.log('nextArray ' + arrayToCheck)
-      console.log(arrayToCheck)
-      const extendedArrayToCheck = arrayToCheck.filter((value, index) => arrayToCheck.indexOf(value) === index)
-      console.log('extendedArrayToCheck ' + extendedArrayToCheck)
-      console.log(extendedArrayToCheck)
-      extendedArrayToCheck.forEach(revealAdjacentCells)
     }
   }
 
+  console.log('nextArray ' + arrayToCheck)
+  console.log(arrayToCheck)
 
   function extendFieldToCheck(query) {
     while (cells[query].classList.contains('safeZone')) {
-      arrayToCheck.forEach(revealAdjacentCells)
+      cells[query].classList.replace('safeZone', 'safeZoneClicked')
       field = new FieldTocCheck(query)
-      arrayToCheck.push(field.array(query))
-      console.log('nextArray ' + arrayToCheck)
+      arrayToCheck = field.array(query)
+      // arrayToCheck.push(field2.array(query))
+      // const extendedArrayToCheck = arrayToCheck.filter((value, index) => arrayToCheck.indexOf(value) === index)
+      console.log('extendedArrayToCheck ' + arrayToCheck)
+      console.log(arrayToCheck)
       arrayToCheck.forEach(extendFieldToCheck)
+    } if (cells[query].classList.contains('nbr')) {
+      cells[query].classList.replace('nbr', 'nbrClicked')
     }
   }
 
