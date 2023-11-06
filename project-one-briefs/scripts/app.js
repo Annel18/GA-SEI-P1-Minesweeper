@@ -183,58 +183,101 @@ function reveal(event) {
   }
 }
 
+function OpenAdjacentCells(query) {
+  if (cells[query].classList.contains('safeZone')) {
+    cells[query].classList.add('cellClicked')
+  } else if (cells[query].classList.contains('nbr')) {
+    cells[query].classList.add('nbrClicked')
+  }
+}
+
 function openEmptyBubbles(cellClicked) {
   const cellClickedIndex = cells.indexOf(cellClicked)
-  const N = cellClickedIndex - width
-  const E = cellClickedIndex + 1
-  const S = cellClickedIndex + width
-  const W = cellClickedIndex - 1
 
-  const newCellClickedIndex = []
-
-  function OpenAdjacentCells(query) {
-    if (cells[query].classList.contains('nbr')) {
-      cells[query].classList.add('nbrClicked')
-    } else if (cells[query].classList.contains('safeZone')) {
-      cells[query].classList.add('cellClicked')
-      newCellClickedIndex.push(query)
-      console.log(newCellClickedIndex)
+  class FieldTocCheck {
+    constructor(cell) {
+      this.cell = cell
+      this.N = this.cell - width
+      this.E = this.cell + 1
+      this.S = this.cell + width
+      this.W = this.cell - 1
+    }
+    array() {
+      if (this.cell === 0) {
+        return [this.E, this.S]
+      } else if (this.cell === width - 1) {
+        return [this.S, this.W]
+      } else if (this.cell === cellCount - 1) {
+        return [this.N, this.W]
+      } else if (this.cell === cellCount - width - 1) {
+        return [this.N, this.E]
+      } else if (this.cell < width) {
+        return [this.E, this.S, this.W]
+      } else if ((this.cell + 1) % height === 0) {
+        return [this.N, this.S, this.W]
+      } else if (this.cell > cellCount - width) {
+        return [this.N, this.E, this.W]
+      } else if (this.cell % height === 0) {
+        return [this.N, this.E, this.S]
+      } else {
+        return [this.N, this.E, this.S, this.W]
+      }
     }
   }
 
-  function recursiveLoop(query) {
-    cells[query].classList.add('cellClicked')
-    newCellClickedIndex.push(query)
-    newCellClickedIndex.forEach(OpenAdjacentCells)
+  let objects = new FieldTocCheck(cellClickedIndex)
+  let arrayToCheck = objects.array(cellClickedIndex)
+  // console.log(objects)
+  // console.log(arrayToCheck)
+  // console.log('first iteration; ' + arrayToCheck)
+  // arrayToCheck.forEach(OpenAdjacentCells)
+  arrayToCheck.forEach(updateField)
+
+  function updateField(cell) {
+    arrayToCheck.forEach(OpenAdjacentCells)
+    // let recursiveCount = 0
+    objects = new FieldTocCheck(cell)
+    arrayToCheck = objects.array(cell)
+    if (cells[cell].classList.contains('safeZone')) {
+      console.log('second iteration; ' + arrayToCheck)
+      arrayToCheck.forEach(OpenAdjacentCells)
+      arrayToCheck.forEach(updateField)
+      // recursiveCount++
+      // if (recursiveCount > 4 * cellCount) {
+      //   break
+      // }
+
+    }
   }
 
-  if (cellClickedIndex < width && cellClickedIndex % height === 0) { // console.log('topLeftCorner: ' + cellClickedIndex)
-    [E, S].forEach(OpenAdjacentCells)
-  } else if (cellClickedIndex < width && (cellClickedIndex + 1) % height === 0) { // console.log('topRigtCorner: ' + cellClickedIndex)
-    [S, W].forEach(OpenAdjacentCells)
-  } else if (cellClickedIndex >= cellCount - width && (cellClickedIndex + 1) % height === 0) { // console.log('bottomRigtCorner: ' + cellClickedIndex)
-    [N, W].forEach(OpenAdjacentCells)
-  } else if (cellClickedIndex >= cellCount - width && cellClickedIndex % height === 0) { // console.log('bottomLeftCorner: ' + cellClickedIndex)
-    [N, E].forEach(OpenAdjacentCells)
-  } else if (cellClickedIndex < width) { // console.log('first row: ' + cellClickedIndex)
-    [E, S, W].forEach(OpenAdjacentCells)
-  } else if (cellClickedIndex >= cellCount - width) { // console.log('last row: ' + cellClickedIndex)
-    [N, E, W].forEach(OpenAdjacentCells)
-  } else if (cellClickedIndex % height === 0) { // console.log('first column: ' + cellClickedIndex)
-    [N, E, S].forEach(OpenAdjacentCells)
-  } else if ((cellClickedIndex + 1) % height === 0) { // console.log('last column: ' + cellClickedIndex)
-    [N, S, W].forEach(OpenAdjacentCells)
-  } else { // console.log('midField: ' + cellClickedIndex)
-    const arrayToCheck = [N, E, S, W]
-    arrayToCheck.forEach(OpenAdjacentCells)
-    // newArrayToCheck.forEach(recursiveLoop)
-  }
+
+
+  // if (cellClickedIndex < width && cellClickedIndex % height === 0) { // console.log('topLeftCorner: ' + cellClickedIndex)
+  //   [E, S].forEach(OpenAdjacentCells)
+  // } 
+  // else if (cellClickedIndex < width && (cellClickedIndex + 1) % height === 0) { // console.log('topRigtCorner: ' + cellClickedIndex)
+  //   [S, W].forEach(OpenAdjacentCells)
+  // } else if (cellClickedIndex >= cellCount - width && (cellClickedIndex + 1) % height === 0) { // console.log('bottomRigtCorner: ' + cellClickedIndex)
+  //   [N, W].forEach(OpenAdjacentCells)
+  // } else if (cellClickedIndex >= cellCount - width && cellClickedIndex % height === 0) { // console.log('bottomLeftCorner: ' + cellClickedIndex)
+  //   [N, E].forEach(OpenAdjacentCells)
+  // } else if (cellClickedIndex < width) { // console.log('first row: ' + cellClickedIndex)
+  //   [E, S, W].forEach(OpenAdjacentCells)
+  // } else if (cellClickedIndex >= cellCount - width) { // console.log('last row: ' + cellClickedIndex)
+  //   [N, E, W].forEach(OpenAdjacentCells)
+  // } else if (cellClickedIndex % height === 0) { // console.log('first column: ' + cellClickedIndex)
+  //   [N, E, S].forEach(OpenAdjacentCells)
+  // } else if ((cellClickedIndex + 1) % height === 0) { // console.log('last column: ' + cellClickedIndex)
+  //   [N, S, W].forEach(OpenAdjacentCells)
+  // } else { // console.log('midField: ' + cellClickedIndex)
+
 }
 
 function addFlag(event) {
   event.target.classList.add('flag')
   const bombsCountdown = bombsNbr--
   bombsDisplay.innerText = bombsCountdown - 1
+  startTime()
 }
 
 //! Events
