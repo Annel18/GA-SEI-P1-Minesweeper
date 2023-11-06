@@ -104,7 +104,7 @@ footer {
   color : greenyellow;
 }
 
-.cellClicked {
+.safeZoneClicked {
   background-image: url('../images/cat.png');
   background-size: cover;
   background-position: center;

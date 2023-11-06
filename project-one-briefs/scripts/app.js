@@ -177,23 +177,23 @@ function reveal(event) {
     })
   } else if (cellClicked.classList.contains('nbr')) {
     cellClicked.classList.replace('nbr', 'nbrClicked')
-  } else {
-    cellClicked.classList.add('cellClicked')
+  } else if (cellClicked.classList.contains('safeZone')){
+    cellClicked.classList.replace('safeZone', 'safeZoneClicked')
     openEmptyBubbles(cellClicked)
   }
 }
 
-function OpenAdjacentCells(query) {
+function revealAdjacentCells(query) {
   if (cells[query].classList.contains('safeZone')) {
-    cells[query].classList.add('cellClicked')
+    cells[query].classList.replace('safeZone', 'safeZoneClicked')
   } else if (cells[query].classList.contains('nbr')) {
-    cells[query].classList.add('nbrClicked')
-  }
+    cells[query].classList.replace('nbr', 'nbrClicked')
+  } 
 }
 
 function openEmptyBubbles(cellClicked) {
   const cellClickedIndex = cells.indexOf(cellClicked)
-
+  console.log('cellClickedIndex; ' + cellClickedIndex)
   class FieldTocCheck {
     constructor(cell) {
       this.cell = cell
@@ -227,50 +227,17 @@ function openEmptyBubbles(cellClicked) {
 
   let objects = new FieldTocCheck(cellClickedIndex)
   let arrayToCheck = objects.array(cellClickedIndex)
-  // console.log(objects)
-  // console.log(arrayToCheck)
-  // console.log('first iteration; ' + arrayToCheck)
-  // arrayToCheck.forEach(OpenAdjacentCells)
-  arrayToCheck.forEach(updateField)
 
-  function updateField(cell) {
-    arrayToCheck.forEach(OpenAdjacentCells)
-    // let recursiveCount = 0
-    objects = new FieldTocCheck(cell)
-    arrayToCheck = objects.array(cell)
-    if (cells[cell].classList.contains('safeZone')) {
-      console.log('second iteration; ' + arrayToCheck)
-      arrayToCheck.forEach(OpenAdjacentCells)
-      arrayToCheck.forEach(updateField)
-      // recursiveCount++
-      // if (recursiveCount > 4 * cellCount) {
-      //   break
-      // }
+  arrayToCheck.forEach(extendFieldToCheck)
 
+  function extendFieldToCheck(query) {
+    while (cells[query].classList.contains('safeZone')) {
+      arrayToCheck.forEach(revealAdjacentCells)
+      objects = new FieldTocCheck(query)
+      arrayToCheck = objects.array(query)
+      arrayToCheck.forEach(extendFieldToCheck)
     }
   }
-
-
-
-  // if (cellClickedIndex < width && cellClickedIndex % height === 0) { // console.log('topLeftCorner: ' + cellClickedIndex)
-  //   [E, S].forEach(OpenAdjacentCells)
-  // } 
-  // else if (cellClickedIndex < width && (cellClickedIndex + 1) % height === 0) { // console.log('topRigtCorner: ' + cellClickedIndex)
-  //   [S, W].forEach(OpenAdjacentCells)
-  // } else if (cellClickedIndex >= cellCount - width && (cellClickedIndex + 1) % height === 0) { // console.log('bottomRigtCorner: ' + cellClickedIndex)
-  //   [N, W].forEach(OpenAdjacentCells)
-  // } else if (cellClickedIndex >= cellCount - width && cellClickedIndex % height === 0) { // console.log('bottomLeftCorner: ' + cellClickedIndex)
-  //   [N, E].forEach(OpenAdjacentCells)
-  // } else if (cellClickedIndex < width) { // console.log('first row: ' + cellClickedIndex)
-  //   [E, S, W].forEach(OpenAdjacentCells)
-  // } else if (cellClickedIndex >= cellCount - width) { // console.log('last row: ' + cellClickedIndex)
-  //   [N, E, W].forEach(OpenAdjacentCells)
-  // } else if (cellClickedIndex % height === 0) { // console.log('first column: ' + cellClickedIndex)
-  //   [N, E, S].forEach(OpenAdjacentCells)
-  // } else if ((cellClickedIndex + 1) % height === 0) { // console.log('last column: ' + cellClickedIndex)
-  //   [N, S, W].forEach(OpenAdjacentCells)
-  // } else { // console.log('midField: ' + cellClickedIndex)
-
 }
 
 function addFlag(event) {
