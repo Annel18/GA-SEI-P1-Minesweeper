@@ -177,19 +177,12 @@ function reveal(event) {
     })
   } else if (cellClicked.classList.contains('nbr')) {
     cellClicked.classList.replace('nbr', 'nbrClicked')
-  } else if (cellClicked.classList.contains('safeZone')){
+  } else if (cellClicked.classList.contains('safeZone')) {
     cellClicked.classList.replace('safeZone', 'safeZoneClicked')
     openEmptyBubbles(cellClicked)
   }
 }
 
-function revealAdjacentCells(query) {
-  if (cells[query].classList.contains('safeZone')) {
-    cells[query].classList.replace('safeZone', 'safeZoneClicked')
-  } else if (cells[query].classList.contains('nbr')) {
-    cells[query].classList.replace('nbr', 'nbrClicked')
-  } 
-}
 
 function openEmptyBubbles(cellClicked) {
   const cellClickedIndex = cells.indexOf(cellClicked)
@@ -225,19 +218,44 @@ function openEmptyBubbles(cellClicked) {
     }
   }
 
-  let objects = new FieldTocCheck(cellClickedIndex)
-  let arrayToCheck = objects.array(cellClickedIndex)
+  let field = new FieldTocCheck(cellClickedIndex)
+  const arrayToCheck = field.array(cellClickedIndex)
+  console.log('firsArray ' + arrayToCheck)
+  console.log(arrayToCheck)
 
-  arrayToCheck.forEach(extendFieldToCheck)
+
+  arrayToCheck.forEach(revealAdjacentCells)
+
+
+  function revealAdjacentCells(query) {
+    if (cells[query].classList.contains('nbr')) {
+      cells[query].classList.replace('nbr', 'nbrClicked')
+    } else if (cells[query].classList.contains('safeZone')) {
+      cells[query].classList.replace('safeZone', 'safeZoneClicked')
+      field = new FieldTocCheck(query)
+      arrayToCheck.push(field.array(query))
+      console.log('nextArray ' + arrayToCheck)
+      console.log(arrayToCheck)
+      const extendedArrayToCheck = arrayToCheck.filter((value, index) => arrayToCheck.indexOf(value) === index)
+      console.log('extendedArrayToCheck ' + extendedArrayToCheck)
+      console.log(extendedArrayToCheck)
+      extendedArrayToCheck.forEach(revealAdjacentCells)
+    }
+  }
+
 
   function extendFieldToCheck(query) {
     while (cells[query].classList.contains('safeZone')) {
       arrayToCheck.forEach(revealAdjacentCells)
-      objects = new FieldTocCheck(query)
-      arrayToCheck = objects.array(query)
+      field = new FieldTocCheck(query)
+      arrayToCheck.push(field.array(query))
+      console.log('nextArray ' + arrayToCheck)
       arrayToCheck.forEach(extendFieldToCheck)
     }
   }
+
+
+
 }
 
 function addFlag(event) {
