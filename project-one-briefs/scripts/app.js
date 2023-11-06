@@ -4,8 +4,9 @@ const gridContainer = document.querySelector('.grid-container')
 const levelButtons = document.getElementsByClassName('levels')
 const resetButton = document.querySelector('#reset')
 const timeDisplay = document.querySelector('#time')
+const bombsDisplay = document.querySelector('#bombsNbr')
 let cells = []
-const dangerZone = []
+
 
 //! Variables
 let gameActive = false
@@ -33,6 +34,7 @@ function resetVariables() {
   cells = []
   time = 0
   timeDisplay.innerText = time
+  bombsDisplay.innerText = bombsNbr
   gameActive = false
 
 
@@ -65,8 +67,8 @@ function createGrid() {
     if (index.classList.contains('bomb')) {
       index.classList.remove('nbr')
     }
-    if (index.classList.contains('nbr')) {
-      dangerZone.push(index)
+    if (!index.classList.contains('nbr') && !index.classList.contains('bomb')) {
+      index.classList.add('safeZone')
     }
   })
 
@@ -78,7 +80,7 @@ function createGrid() {
 }
 
 function updateGrid(evt) {
-  
+
   resetVariables()
   gameActive = true
   if (evt.target.classList.contains('easy')) {
@@ -94,13 +96,6 @@ function updateGrid(evt) {
   bombsNbr = levelChoice.bombsNbr
 
   createGrid()
-
-  // if (evt.target.classList.contains('expert')) {
-  //   grid.style.width = '600px'
-  // } else {
-  //   grid.style.width = '300px'
-  // }
-
 }
 
 function dangerNbr(cell) {
@@ -188,54 +183,59 @@ function reveal(event) {
   }
 }
 
-
 function openEmptyBubbles(cellClicked) {
   const cellClickedIndex = cells.indexOf(cellClicked)
-  const NW = cellClickedIndex - width - 1
   const N = cellClickedIndex - width
-  const NE = cellClickedIndex - width + 1
   const E = cellClickedIndex + 1
-  const SE = cellClickedIndex + width + 1
   const S = cellClickedIndex + width
-  const SW = cellClickedIndex + width - 1
   const W = cellClickedIndex - 1
 
-  function openAdjacentCells(query) {
-    while (!cells[query].classList.contains('bomb')
-      && !cells[query].classList.contains('nbr')
-      && !cells[query].classList.contains('cellClicked')) {
+  const newCellClickedIndex = []
+
+  function OpenAdjacentCells(query) {
+    if (cells[query].classList.contains('nbr')) {
+      cells[query].classList.add('nbrClicked')
+    } else if (cells[query].classList.contains('safeZone')) {
       cells[query].classList.add('cellClicked')
+      newCellClickedIndex.push(query)
+      console.log(newCellClickedIndex)
     }
   }
 
-  if (cellClickedIndex < width && cellClickedIndex % height === 0) { // console.log('topLeftCorner: ' + cellClickedIndex)
-    [E, S].forEach(openAdjacentCells)
-  } else if (cellClickedIndex < width && (cellClickedIndex + 1) % height === 0) { // console.log('topRigtCorner: ' + cellClickedIndex)
-    [S, W].forEach(openAdjacentCells)
-  } else if (cellClickedIndex >= cellCount - width && (cellClickedIndex + 1) % height === 0) { // console.log('bottomRigtCorner: ' + cellClickedIndex)
-    [N, W].forEach(openAdjacentCells)
-  } else if (cellClickedIndex >= cellCount - width && cellClickedIndex % height === 0) { // console.log('bottomLeftCorner: ' + cellClickedIndex)
-    [N, E].forEach(openAdjacentCells)
-  } else if (cellClickedIndex < width) { // console.log('first row: ' + cellClickedIndex)
-    [E, S, W].forEach(openAdjacentCells)
-  } else if (cellClickedIndex >= cellCount - width) { // console.log('last row: ' + cellClickedIndex)
-    [N, E, W].forEach(openAdjacentCells)
-  } else if (cellClickedIndex % height === 0) { // console.log('first column: ' + cellClickedIndex)
-    [N, E, S].forEach(openAdjacentCells)
-  } else if ((cellClickedIndex + 1) % height === 0) { // console.log('last column: ' + cellClickedIndex)
-    [N, S, W].forEach(openAdjacentCells)
-  } else { // console.log('midField: ' + cellClickedIndex)
-    [N, E, S, W].forEach(openAdjacentCells)
+  function recursiveLoop(query) {
+    cells[query].classList.add('cellClicked')
+    newCellClickedIndex.push(query)
+    newCellClickedIndex.forEach(OpenAdjacentCells)
   }
 
-
+  if (cellClickedIndex < width && cellClickedIndex % height === 0) { // console.log('topLeftCorner: ' + cellClickedIndex)
+    [E, S].forEach(OpenAdjacentCells)
+  } else if (cellClickedIndex < width && (cellClickedIndex + 1) % height === 0) { // console.log('topRigtCorner: ' + cellClickedIndex)
+    [S, W].forEach(OpenAdjacentCells)
+  } else if (cellClickedIndex >= cellCount - width && (cellClickedIndex + 1) % height === 0) { // console.log('bottomRigtCorner: ' + cellClickedIndex)
+    [N, W].forEach(OpenAdjacentCells)
+  } else if (cellClickedIndex >= cellCount - width && cellClickedIndex % height === 0) { // console.log('bottomLeftCorner: ' + cellClickedIndex)
+    [N, E].forEach(OpenAdjacentCells)
+  } else if (cellClickedIndex < width) { // console.log('first row: ' + cellClickedIndex)
+    [E, S, W].forEach(OpenAdjacentCells)
+  } else if (cellClickedIndex >= cellCount - width) { // console.log('last row: ' + cellClickedIndex)
+    [N, E, W].forEach(OpenAdjacentCells)
+  } else if (cellClickedIndex % height === 0) { // console.log('first column: ' + cellClickedIndex)
+    [N, E, S].forEach(OpenAdjacentCells)
+  } else if ((cellClickedIndex + 1) % height === 0) { // console.log('last column: ' + cellClickedIndex)
+    [N, S, W].forEach(OpenAdjacentCells)
+  } else { // console.log('midField: ' + cellClickedIndex)
+    const arrayToCheck = [N, E, S, W]
+    arrayToCheck.forEach(OpenAdjacentCells)
+    // newArrayToCheck.forEach(recursiveLoop)
+  }
 }
-
 
 function addFlag(event) {
   event.target.classList.add('flag')
+  const bombsCountdown = bombsNbr--
+  bombsDisplay.innerText = bombsCountdown - 1
 }
-
 
 //! Events
 for (const button of levelButtons) {
