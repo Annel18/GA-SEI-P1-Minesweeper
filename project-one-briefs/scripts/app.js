@@ -71,11 +71,15 @@ function createGrid() {
       index.classList.add('safeZone')
     }
   })
-
-  if (levelChoice === levels[2]) {
-    grid.style.width = '600px'
-  } else {
+  if (levelChoice === levels[0]) {
+    grid.style.width = '150px'
+    grid.style.height = '150px'
+  } else if (levelChoice === levels[1]) {
     grid.style.width = '300px'
+    grid.style.height = '300px'
+  } else if (levelChoice === levels[2]) {
+    grid.style.width = '600px'
+    grid.style.height = '300px'
   }
 }
 
@@ -101,6 +105,41 @@ function updateGrid(evt) {
 function dangerNbr(cell) {
   let dangerCount = 0
 
+  class NbrDistribution {
+    constructor (cell){
+      this.cell = cell
+      this.NW = this.cell - width - 1
+      this.N = this.cell - width
+      this.NE = this.cell - width + 1
+      this.E = this.cell + 1
+      this.SE = this.cell + width + 1
+      this.S = this.cell + width
+      this.SW = this.cell + width - 1
+      this.W = this.cell - 1
+    }
+    arrayOfAdjacentCells(){
+      if (this.cell === 0) { //Top Left Corner
+        return [this.E, this.SE, this.S]
+      } else if (this.cell === width - 1) { //Top Right Corner
+        return [this.S, this.SW, this.W]
+      } else if (this.cell === cellCount - 1) { //Bottom Right Corner
+        return [this.NW, this.N, this.W]
+      } else if (this.cell === cellCount - width) { //Bottom Left Corner
+        return [this.N, this.NE, this.E]
+      } else if (this.cell < width) { //First Row
+        return [this.E, this.SE, this.S, this.SW, this.W]
+      } else if ((this.cell + 1) % height === 0) { //Last Column
+        return [this.NW, this.N, this.S, this.SW, this.W]
+      } else if (this.cell >= cellCount - width) { //Bottom Row
+        return [this.NW, this.N, this.NE, this.E, this.W]
+      } else if (this.cell % height === 0) { //First Column
+        return [this.N, this.NE, this.E, this.SE, this.S]
+      } else {
+        return [this.NW, this.N, this.NE, this.E, this,SE, this.S, this.SW, this.W]
+      }
+    }
+  }
+
   const NW = cell - width - 1
   const N = cell - width
   const NE = cell - width + 1
@@ -115,6 +154,8 @@ function dangerNbr(cell) {
       dangerCount++
     }
   }
+
+  
 
   if (cell < width && cell % height === 0) { // console.log('topLeftCorner: ' + cell)
     [E, SE, S].forEach(updateDangerCount)
@@ -135,10 +176,12 @@ function dangerNbr(cell) {
   } else { // console.log('midField: ' + cell)
     [NW, N, NE, E, SE, S, SW, W].forEach(updateDangerCount)
   }
+
   cells[cell].innerText = dangerCount
   if (cells[cell].innerText > 0) {
     cells[cell].classList.add('nbr')
   }
+  // if (cells[cell].classList.contains('nbr'))
 }
 
 function mineField() {
@@ -184,47 +227,59 @@ function reveal(event) {
 }
 
 
+class AdjacentCells {
+  constructor(cell) {
+    this.cell = cell
+    this.N = this.cell - width
+    this.E = this.cell + 1
+    this.S = this.cell + width
+    this.W = this.cell - 1
+  }
+  arrayOfAdjacentCells() {
+    if (this.cell === 0) { //Top Left Corner
+      return [this.E, this.S]
+    } else if (this.cell === width - 1) { //Top Right Corner
+      return [this.S, this.W]
+    } else if (this.cell === cellCount - 1) { //Bottom Right Corner
+      return [this.N, this.W]
+    } else if (this.cell === cellCount - width) { //Bottom Left Corner
+      return [this.N, this.E]
+    } else if (this.cell < width) { //First Row
+      return [this.E, this.S, this.W]
+    } else if ((this.cell + 1) % width === 0) { //Last Column
+      return [this.N, this.S, this.W]
+    } else if (this.cell >= cellCount - width) { //Bottom Row
+      return [this.N, this.E, this.W]
+    } else if (this.cell % width === 0) { //First Column
+      return [this.N, this.E, this.S]
+    } else {
+      return [this.N, this.E, this.S, this.W]
+    }
+  }
+}
 function openEmptyBubbles(cellClicked) {
   const cellClickedIndex = cells.indexOf(cellClicked)
   console.log('cellClickedIndex; ' + cellClickedIndex)
-  class FieldTocCheck {
-    constructor(cell) {
-      this.cell = cell
-      this.N = this.cell - width
-      this.E = this.cell + 1
-      this.S = this.cell + width
-      this.W = this.cell - 1
-    }
-    array() {
-      if (this.cell === 0) {
-        return [this.E, this.S]
-      } else if (this.cell === width - 1) {
-        return [this.S, this.W]
-      } else if (this.cell === cellCount - 1) {
-        return [this.N, this.W]
-      } else if (this.cell === cellCount - width - 1) {
-        return [this.N, this.E]
-      } else if (this.cell < width) {
-        return [this.E, this.S, this.W]
-      } else if ((this.cell + 1) % height === 0) {
-        return [this.N, this.S, this.W]
-      } else if (this.cell > cellCount - width) {
-        return [this.N, this.E, this.W]
-      } else if (this.cell % height === 0) {
-        return [this.N, this.E, this.S]
-      } else {
-        return [this.N, this.E, this.S, this.W]
-      }
-    }
-  }
 
-  let field = new FieldTocCheck(cellClickedIndex)
-  let arrayToCheck = field.array(cellClickedIndex)
+  let field = new AdjacentCells(cellClickedIndex)
+  let arrayToCheck = field.arrayOfAdjacentCells()
   console.log('firsArray ' + arrayToCheck)
   console.log(arrayToCheck)
 
-
   arrayToCheck.forEach(extendFieldToCheck)
+
+  function extendFieldToCheck(query) {
+    while (cells[query].classList.contains('safeZone')) {
+      cells[query].classList.replace('safeZone', 'safeZoneClicked')
+      field = new AdjacentCells(query)
+      arrayToCheck = field.arrayOfAdjacentCells(query)
+      // arrayToCheck.push(field2.arrayOfAdjacentCells(query))
+      // const extendedArrayToCheck = arrayToCheck.filter((value, index) => arrayToCheck.indexOf(value) === index)
+      arrayToCheck.forEach(extendFieldToCheck)
+    } if (cells[query].classList.contains('nbr')) {
+      cells[query].classList.replace('nbr', 'nbrClicked')
+    }
+  }
 
 
   function revealAdjacentCells(query) {
@@ -235,23 +290,7 @@ function openEmptyBubbles(cellClicked) {
     }
   }
 
-  console.log('nextArray ' + arrayToCheck)
-  console.log(arrayToCheck)
 
-  function extendFieldToCheck(query) {
-    while (cells[query].classList.contains('safeZone')) {
-      cells[query].classList.replace('safeZone', 'safeZoneClicked')
-      field = new FieldTocCheck(query)
-      arrayToCheck = field.array(query)
-      // arrayToCheck.push(field2.array(query))
-      // const extendedArrayToCheck = arrayToCheck.filter((value, index) => arrayToCheck.indexOf(value) === index)
-      console.log('extendedArrayToCheck ' + arrayToCheck)
-      console.log(arrayToCheck)
-      arrayToCheck.forEach(extendFieldToCheck)
-    } if (cells[query].classList.contains('nbr')) {
-      cells[query].classList.replace('nbr', 'nbrClicked')
-    }
-  }
 
 
 

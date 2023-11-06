@@ -65,19 +65,21 @@ section {
 
 .grid {
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
-  height: 300px;
-  width: 300px;
+  height: 110px;
+  width: 110px;
   /* aspect-ratio: 1; */
   padding: 0;
   display: block;
 }
 
 .cell {
+  font-size: 0.5em;
   border: 1px solid lightgrey;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   margin: auto;
+  text-transform: none;
 }
 
 footer {
