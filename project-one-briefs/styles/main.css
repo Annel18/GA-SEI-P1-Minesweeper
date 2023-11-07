@@ -84,8 +84,11 @@ section {
   display: block;
 }
 
-.nbr .bomb .safeZone {
+.nbr .safeZone {
   color: transparent
+}
+.bomb {
+  color: red
 }
 
 .cell {
@@ -94,7 +97,7 @@ section {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  color: transparent
+  /* color: transparent */
 }
 
 footer {

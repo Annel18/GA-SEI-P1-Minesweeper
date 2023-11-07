@@ -221,22 +221,19 @@ function mineField() {
   }
 }
 
-function startTime(event) {
+function startTime() {
   clearInterval(interval)
   interval = setInterval(() => {
     time++
     timeDisplay.innerText = time
   }, 1000)
-  reveal(event)
-}
-
-function clearAllInterval() {
 }
 
 function reveal(event) {
+  startTime()
+  const allBombs = document.querySelectorAll('.bomb')
   const cellClicked = event.target
   if (cellClicked.classList.contains('bomb')) {
-    const allBombs = document.querySelectorAll('.bomb')
     allBombs.forEach(function (item) {
       item.classList.replace('bomb', 'bombClicked')
       clearInterval(interval)
@@ -274,19 +271,34 @@ function openEmptyBubbles(cellClicked) {
 }
 
 function addFlag(event) {
-  let bombsCountdown = bombsNbr
+  startTime()
+  const allBombs = document.querySelectorAll('.bomb')
+  console.log(allBombs)
   if (event.target.classList.contains('flag')) {
     event.target.classList.remove('flag')
-    bombsCountdown = bombsNbr++
-    bombsDisplay.innerText = bombsCountdown + 1
-  } else {
+    bombsNbr++
+    bombsDisplay.innerText = bombsNbr
+  } else if (!event.target.classList.contains('flag')) {
     event.target.classList.add('flag')
-    bombsCountdown = bombsNbr--
-    bombsDisplay.innerText = bombsCountdown - 1
+    bombsNbr--
+    bombsDisplay.innerText = bombsNbr
   }
-  startTime()
+
+  const allFlags = []
+  allBombs.forEach(function (item) {
+    if (item.classList.contains('flag')) {
+      allFlags.push(item)
+      if (allFlags.length === allBombs.length){
+        clearInterval(interval)
+      }
+    }
+  })
 }
 
+
+
+function clearAllInterval() {
+}
 //! Events
 for (const button of levelButtons) {
   button.addEventListener('click', updateGrid)
@@ -294,7 +306,7 @@ for (const button of levelButtons) {
 
 function eventsOnCells() {
   for (const cell of cells) {
-    cell.addEventListener('click', startTime)
+    cell.addEventListener('click', reveal)
     cell.addEventListener('contextmenu', addFlag)
   }
 }
