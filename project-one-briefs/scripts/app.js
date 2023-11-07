@@ -14,9 +14,9 @@ let gameActive = false
 let time
 
 const levels = [
-  { difficulty: 'easy', bombsNbr: 6, width: 6, height: 6 },
-  { difficulty: 'hard', bombsNbr: 24, width: 12, height: 12 },
-  { difficulty: 'expert', bombsNbr: 48, width: 24, height: 12 }
+  { difficulty: 'easy', bombsNbr: 10, width: 8, height: 8 },
+  { difficulty: 'hard', bombsNbr: 40, width: 16, height: 16 },
+  { difficulty: 'expert', bombsNbr: 80, width: 32, height: 16 }
 ]
 
 let levelChoice = levels[0]
@@ -34,8 +34,8 @@ function resetVariables() {
   grid.replaceChildren()
   cells = []
   time = 0
-  timeDisplay.innerText = time
-  bombsDisplay.innerText = bombsNbr
+  timeDisplay.innerText = `TIME: ${time}`
+  bombsDisplay.innerText = `BOMBS REMAINING: ${bombsNbr}`
   gameActive = false
 }
 
@@ -130,16 +130,19 @@ function createGrid() {
   })
 
   if (levelChoice === levels[0]) {
-    grid.style.width = '150px'
-    grid.style.height = '150px'
+    grid.style.width = '200px'
+    grid.style.height = '200px'
+    gridContainer.style.backgroundImage = 'url(images/hayStack.jpeg)'
   } else if (levelChoice === levels[1]) {
-    grid.style.width = '300px'
-    grid.style.height = '300px'
+    grid.style.width = '400px'
+    grid.style.height = '400px'
     grid.style.backgroundImage = 'url(images/timber-house.jpeg)'
+    gridContainer.style.backgroundImage = 'url(images/oak-cobbles.jpeg)'
   } else if (levelChoice === levels[2]) {
-    grid.style.width = '600px'
-    grid.style.height = '300px'
+    grid.style.width = '800px'
+    grid.style.height = '400px'
     grid.style.backgroundImage = 'url(images/brick-house.jpeg)'
+    gridContainer.style.backgroundImage = 'url(images/brick-bckgnd.jpeg)'
   }
 
 
@@ -234,20 +237,24 @@ function startTime() {
       highScoreDisplay.innerText = time
     }
     // Score = time display
-    timeDisplay.innerText = time
+    timeDisplay.innerText = `TIME: ${time}`
 
   }, 1000)
 }
 
 function reveal(event) {
   startTime()
-  const allBombs = document.querySelectorAll('.bomb')
   const cellClicked = event.target
+  const allBombs = document.querySelectorAll('.bomb')
+  const allCells = document.querySelectorAll('.cell')
   if (cellClicked.classList.contains('bomb')) {
     allBombs.forEach(function (item) {
       item.classList.replace('bomb', 'bombClicked')
       item.innerText = '🐺'
       clearInterval(interval)
+      allCells.forEach(function (cell) {
+        cell.setAttribute('disabled', true)
+      })
     })
   } else if (cellClicked.classList.contains('nbr')) {
     cellClicked.classList.replace('nbr', 'nbrClicked')
@@ -285,15 +292,15 @@ function addFlag(event) {
   event.preventDefault()
   startTime()
   const allBombs = document.querySelectorAll('.bomb')
-  const allCells = document.querySelectorAll('.cell')
+  const allCells = document.getElementsByClassName('cell')
   if (event.target.classList.contains('flag')) {
     event.target.classList.remove('flag')
     bombsNbr++
-    bombsDisplay.innerText = bombsNbr
+    bombsDisplay.innerText = `BOMBS REMAINING: ${bombsNbr}`
   } else if (!event.target.classList.contains('flag')) {
     event.target.classList.add('flag')
     bombsNbr--
-    bombsDisplay.innerText = bombsNbr
+    bombsDisplay.innerText = `BOMBS REMAINING: ${bombsNbr}`
   }
 
   const allFlags = []

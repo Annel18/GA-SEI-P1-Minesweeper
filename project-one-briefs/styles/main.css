@@ -11,67 +11,113 @@
 
 * {
   box-sizing: border-box;
-  border: 1px solid gray;
+  /* border: 1px solid gray; */
   font-family: helvetica;
 }
 
 body {
   margin: auto;
+  display: flex;
 }
 
 header {
   display: flex;
-  justify-content: space-evenly;
-  height: calc(100vh / 5);
+  justify-content: space-between;
+  min-height: calc(100vh / 5);
   padding: 1em;
+  border-bottom: 1px solid var(--nbrColor1);
 }
 
-h1,
+h1 {
+  font-size: 2em;
+  text-align: left;
+  vertical-align: text-top;
+  justify-content: center;
+}
+
+
 h2 {
   font-size: 1em;
   text-align: center;
 }
 
-header div {
+.levels-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
+  align-items: baseline;
   padding-left: 5em;
 }
 
-main {
-  display: flex;
-  justify-content: center;
-  height: calc(100vh * 4 / 5 - 3em);
-  min-height: 400px;
+.levels-container button {
+  min-width: 15em;
+  /* margin-bottom: 1em; */
+  /* background-color: lightgrey; */
+  /* box-shadow: inset 5px 5px white; */
+  font-size: 1em;
+  border-radius: 1em;
+  border:1px solid  #478cd2
 }
 
 .side1,
 .side2 {
-  width: 5em;
+  width: 200px;
+  background-image: url('../images/img1.png');
+  background-size: contain;
+  margin: 0 2em 0 2em ;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  width: 100%
 }
 
 section {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: calc(100vw - 10em);
+  height: calc(100vh * 4 / 5 - 3em);
+  min-width: 800px;
+  
 }
 
 .hero {
+  padding: 0 1em 0 1em;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
-  height: 15%;
-  /* padding: 1em; */
+  height: 3em;
+  border-bottom: 1px solid var(--nbrColor1);
 }
 
+#reset {
+  margin: 0 9em 0 0;
+  display: flex;
+  height: 100%;
+  aspect-ratio: 1;
+  justify-self: center;
+}
+
+footer {
+  height: 3em;
+  display: flex;
+  justify-content: space-around;
+}
+
+
+
 .grid-container {
+  margin-top: .5em;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* padding: 1em; */
+  min-height: 400px;
+  background: rgb(255, 255, 255, 0.5);
+  background-image: url('../images/oak-cobbles.jpeg');
+  background-position: center;
+  background-blend-mode: color-burn;
+  background-size: contain;
 }
 
 .grid {
@@ -87,7 +133,7 @@ section {
   display: block;
 }
 
-.grid button {
+.cell {
   /* font-size: 0.5em; */
   border: 1px solid lightgrey;
   display: inline-flex;
@@ -97,80 +143,74 @@ section {
   /* color: transparent */
 }
 
-.nbr, .safeZone, .bomb {
-  color: transparent
-}
-.bomb{
-  color: red;
-}
-
-
-footer {
-  height: 3em;
-  display: flex;
-  justify-content: space-around;
-}
-
-#reset {
-  display: flex;
-  height: 100%;
-  aspect-ratio: 1;
+.nbr,
+.safeZone,
+.bomb {
+  color: transparent;
+  box-shadow: inset 5px 5px white;
 }
 
 .safeZoneClicked {
   background-color: transparent;
-  color:transparent
-  /* background-image: url('../images/cat.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat; */
+  color: transparent;
+  box-shadow: unset;
 }
 
 .nbrClicked {
   background-color: transparent;
+  box-shadow: unset;
 }
 
 .bombClicked {
   background-color: transparent;
-  /* color: transparent; */
-  /* background-image: url('../images/mole.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat; */
-}
-
-.flag {
-  background-image: url('../images/head.gif');
+  background-image: url('../images/wolf.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  box-shadow: unset;
 }
 
-#nbr0  {
+.flag {
+  background-color: transparent;
+  background-image: url('../images/flag.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: unset;
+}
+
+#nbr0 {
   color: transparent;
 }
+
 #nbr1 {
   color: var(--nbrColor1);
 }
-#nbr2  {
+
+#nbr2 {
   color: var(--nbrColor2);
 }
+
 #nbr3 {
   color: var(--nbrColor3);
 }
-#nbr4  {
+
+#nbr4 {
   color: var(--nbrColor4);
 }
+
 #nbr5 {
   color: var(--nbrColor5);
 }
-#nbr6  {
+
+#nbr6 {
   color: var(--nbrColor6);
 }
+
 #nbr7 {
   color: var(--nbrColor7);
 }
-#nbr8  {
+
+#nbr8 {
   color: var(--nbrColor8);
 }
-
