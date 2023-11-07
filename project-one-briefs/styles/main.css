@@ -1,3 +1,14 @@
+:root {
+  --nbrColor1: #478cd2;
+  --nbrColor2: #a3d149;
+  --nbrColor3: #f84f37;
+  --nbrColor4: #f8b446;
+  --nbrColor5: #8e4dbd;
+  --nbrColor6: #5fd1bc;
+  --nbrColor7: #d35697;
+  --nbrColor8: #fcf934;
+}
+
 * {
   box-sizing: border-box;
   border: 1px solid gray;
@@ -16,7 +27,8 @@ header {
   padding: 1em;
 }
 
-h1, h2{
+h1,
+h2 {
   font-size: 1em;
   text-align: center;
 }
@@ -72,14 +84,17 @@ section {
   display: block;
 }
 
+.nbr .bomb .safeZone {
+  color: transparent
+}
+
 .cell {
-  font-size: 0.5em;
+  /* font-size: 0.5em; */
   border: 1px solid lightgrey;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  margin: auto;
-  text-transform: none;
+  color: transparent
 }
 
 footer {
@@ -94,17 +109,7 @@ footer {
   aspect-ratio: 1;
 }
 
-.nbr {
-  color : blue;
-}
 
-.bomb {
-  color : red;
-}
-
-.nbrClicked {
-  color : greenyellow;
-}
 
 .safeZoneClicked {
   background-image: url('../images/cat.png');
@@ -114,7 +119,7 @@ footer {
 }
 
 .bombClicked {
-  color : red;
+  color: transparent;
   background-image: url('../images/mole.png');
   background-size: cover;
   background-position: center;
@@ -128,3 +133,34 @@ footer {
   background-repeat: no-repeat;
 }
 
+#nbr0  {
+  color: transparent;
+}
+#nbr1 {
+  color: var(--nbrColor1);
+}
+#nbr2  {
+  color: var(--nbrColor2);
+}
+#nbr3 {
+  color: var(--nbrColor3);
+}
+#nbr4  {
+  color: var(--nbrColor4);
+}
+#nbr5 {
+  color: var(--nbrColor5);
+}
+#nbr6  {
+  color: var(--nbrColor6);
+}
+#nbr7 {
+  color: var(--nbrColor7);
+}
+#nbr8  {
+  color: var(--nbrColor8);
+}
+
+.nbrClicked {
+  color: greenyellow;
+}

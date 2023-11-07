@@ -36,9 +36,64 @@ function resetVariables() {
   timeDisplay.innerText = time
   bombsDisplay.innerText = bombsNbr
   gameActive = false
+}
 
+class SurroundingCells {
+  constructor(cell) {
+    this.cell = cell
+    this.NW = this.cell - width - 1
+    this.N = this.cell - width
+    this.NE = this.cell - width + 1
+    this.E = this.cell + 1
+    this.SE = this.cell + width + 1
+    this.S = this.cell + width
+    this.SW = this.cell + width - 1
+    this.W = this.cell - 1
+  }
 
+  arrayOfAdjacentCells() {
+    if (this.cell === 0) { //Top Left Corner
+      return [this.E, this.S]
+    } else if (this.cell === width - 1) { //Top Right Corner
+      return [this.S, this.W]
+    } else if (this.cell === cellCount - 1) { //Bottom Right Corner
+      return [this.N, this.W]
+    } else if (this.cell === cellCount - width) { //Bottom Left Corner
+      return [this.N, this.E]
+    } else if (this.cell < width) { //First Row
+      return [this.E, this.S, this.W]
+    } else if ((this.cell + 1) % width === 0) { //Last Column
+      return [this.N, this.S, this.W]
+    } else if (this.cell >= cellCount - width) { //Bottom Row
+      return [this.N, this.E, this.W]
+    } else if (this.cell % width === 0) { //First Column
+      return [this.N, this.E, this.S]
+    } else {
+      return [this.N, this.E, this.S, this.W]
+    }
+  }
 
+  arrayOfSurroundingCells() {
+    if (this.cell === 0) { //Top Left Corner
+      return this.arrayOfAdjacentCells().push([this.SE])
+    } else if (this.cell === width - 1) { //Top Right Corner
+      return this.arrayOfAdjacentCells().push([this.SW])
+    } else if (this.cell === cellCount - 1) { //Bottom Right Corner
+      return this.arrayOfAdjacentCells().push([this.NW])
+    } else if (this.cell === cellCount - width) { //Bottom Left Corner
+      return this.arrayOfAdjacentCells().push([this.NE])
+    } else if (this.cell < width) { //First Row
+      return this.arrayOfAdjacentCells().push([this.SE, this.SW])
+    } else if ((this.cell + 1) % width === 0) { //Last Column
+      return this.arrayOfAdjacentCells().push([this.NW, this.SW])
+    } else if (this.cell >= cellCount - width) { //Bottom Row
+      return this.arrayOfAdjacentCells().push([this.NE, this.NW])
+    } else if (this.cell % width === 0) { //First Column
+      return this.arrayOfAdjacentCells().push([this.NE, this.SE])
+    } else {
+      return this.arrayOfAdjacentCells().push([this.NE, this.NW, this.SW, this.SE])
+    }
+  }
 }
 
 //! Execution
@@ -56,6 +111,7 @@ function createGrid() {
     cells.push(cell)
     cell.classList.add('cell')
     eventsOnCells()
+
   }
   mineField()
 
@@ -71,6 +127,7 @@ function createGrid() {
       index.classList.add('safeZone')
     }
   })
+
   if (levelChoice === levels[0]) {
     grid.style.width = '150px'
     grid.style.height = '150px'
@@ -81,6 +138,8 @@ function createGrid() {
     grid.style.width = '600px'
     grid.style.height = '300px'
   }
+
+
 }
 
 function updateGrid(evt) {
@@ -105,41 +164,6 @@ function updateGrid(evt) {
 function dangerNbr(cell) {
   let dangerCount = 0
 
-  class NbrDistribution {
-    constructor (cell){
-      this.cell = cell
-      this.NW = this.cell - width - 1
-      this.N = this.cell - width
-      this.NE = this.cell - width + 1
-      this.E = this.cell + 1
-      this.SE = this.cell + width + 1
-      this.S = this.cell + width
-      this.SW = this.cell + width - 1
-      this.W = this.cell - 1
-    }
-    arrayOfAdjacentCells(){
-      if (this.cell === 0) { //Top Left Corner
-        return [this.E, this.SE, this.S]
-      } else if (this.cell === width - 1) { //Top Right Corner
-        return [this.S, this.SW, this.W]
-      } else if (this.cell === cellCount - 1) { //Bottom Right Corner
-        return [this.NW, this.N, this.W]
-      } else if (this.cell === cellCount - width) { //Bottom Left Corner
-        return [this.N, this.NE, this.E]
-      } else if (this.cell < width) { //First Row
-        return [this.E, this.SE, this.S, this.SW, this.W]
-      } else if ((this.cell + 1) % height === 0) { //Last Column
-        return [this.NW, this.N, this.S, this.SW, this.W]
-      } else if (this.cell >= cellCount - width) { //Bottom Row
-        return [this.NW, this.N, this.NE, this.E, this.W]
-      } else if (this.cell % height === 0) { //First Column
-        return [this.N, this.NE, this.E, this.SE, this.S]
-      } else {
-        return [this.NW, this.N, this.NE, this.E, this,SE, this.S, this.SW, this.W]
-      }
-    }
-  }
-
   const NW = cell - width - 1
   const N = cell - width
   const NE = cell - width + 1
@@ -154,8 +178,6 @@ function dangerNbr(cell) {
       dangerCount++
     }
   }
-
-  
 
   if (cell < width && cell % height === 0) { // console.log('topLeftCorner: ' + cell)
     [E, SE, S].forEach(updateDangerCount)
@@ -178,10 +200,11 @@ function dangerNbr(cell) {
   }
 
   cells[cell].innerText = dangerCount
+  // cells[cell].setAttribute('id', 'nbr' + dangerCount)
+
   if (cells[cell].innerText > 0) {
     cells[cell].classList.add('nbr')
   }
-  // if (cells[cell].classList.contains('nbr'))
 }
 
 function mineField() {
@@ -224,82 +247,43 @@ function reveal(event) {
     cellClicked.classList.replace('safeZone', 'safeZoneClicked')
     openEmptyBubbles(cellClicked)
   }
-}
-
-
-class AdjacentCells {
-  constructor(cell) {
-    this.cell = cell
-    this.N = this.cell - width
-    this.E = this.cell + 1
-    this.S = this.cell + width
-    this.W = this.cell - 1
-  }
-  arrayOfAdjacentCells() {
-    if (this.cell === 0) { //Top Left Corner
-      return [this.E, this.S]
-    } else if (this.cell === width - 1) { //Top Right Corner
-      return [this.S, this.W]
-    } else if (this.cell === cellCount - 1) { //Bottom Right Corner
-      return [this.N, this.W]
-    } else if (this.cell === cellCount - width) { //Bottom Left Corner
-      return [this.N, this.E]
-    } else if (this.cell < width) { //First Row
-      return [this.E, this.S, this.W]
-    } else if ((this.cell + 1) % width === 0) { //Last Column
-      return [this.N, this.S, this.W]
-    } else if (this.cell >= cellCount - width) { //Bottom Row
-      return [this.N, this.E, this.W]
-    } else if (this.cell % width === 0) { //First Column
-      return [this.N, this.E, this.S]
-    } else {
-      return [this.N, this.E, this.S, this.W]
-    }
+  if (cellClicked.classList.contains('nbrClicked')) {
+    cellClicked.setAttribute('id', 'nbr' + cellClicked.innerText)
   }
 }
+
 function openEmptyBubbles(cellClicked) {
   const cellClickedIndex = cells.indexOf(cellClicked)
-  console.log('cellClickedIndex; ' + cellClickedIndex)
 
-  let field = new AdjacentCells(cellClickedIndex)
-  let arrayToCheck = field.arrayOfAdjacentCells()
-  console.log('firsArray ' + arrayToCheck)
-  console.log(arrayToCheck)
+  let fieldInPlay = new SurroundingCells(cellClickedIndex)
+  let arrayToCheck = fieldInPlay.arrayOfAdjacentCells()
 
   arrayToCheck.forEach(extendFieldToCheck)
 
   function extendFieldToCheck(query) {
     while (cells[query].classList.contains('safeZone')) {
       cells[query].classList.replace('safeZone', 'safeZoneClicked')
-      field = new AdjacentCells(query)
-      arrayToCheck = field.arrayOfAdjacentCells(query)
-      // arrayToCheck.push(field2.arrayOfAdjacentCells(query))
-      // const extendedArrayToCheck = arrayToCheck.filter((value, index) => arrayToCheck.indexOf(value) === index)
+      fieldInPlay = new SurroundingCells(query)
+      arrayToCheck = fieldInPlay.arrayOfAdjacentCells(query)
       arrayToCheck.forEach(extendFieldToCheck)
     } if (cells[query].classList.contains('nbr')) {
       cells[query].classList.replace('nbr', 'nbrClicked')
+      cells[query].setAttribute('id', 'nbr' + cells[query].innerText)
     }
   }
-
-
-  function revealAdjacentCells(query) {
-    if (cells[query].classList.contains('nbr')) {
-      cells[query].classList.replace('nbr', 'nbrClicked')
-    } else if (cells[query].classList.contains('safeZone')) {
-      cells[query].classList.replace('safeZone', 'safeZoneClicked')
-    }
-  }
-
-
-
-
-
 }
 
 function addFlag(event) {
-  event.target.classList.add('flag')
-  const bombsCountdown = bombsNbr--
-  bombsDisplay.innerText = bombsCountdown - 1
+  let bombsCountdown = bombsNbr
+  if (event.target.classList.contains('flag')) {
+    event.target.classList.remove('flag')
+    bombsCountdown = bombsNbr++
+    bombsDisplay.innerText = bombsCountdown + 1
+  } else {
+    event.target.classList.add('flag')
+    bombsCountdown = bombsNbr--
+    bombsDisplay.innerText = bombsCountdown - 1
+  }
   startTime()
 }
 
