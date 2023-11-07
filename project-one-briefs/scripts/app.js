@@ -5,6 +5,7 @@ const levelButtons = document.getElementsByClassName('levels')
 const resetButton = document.querySelector('#reset')
 const timeDisplay = document.querySelector('#time')
 const bombsDisplay = document.querySelector('#bombsNbr')
+const highScoreDisplay = document.querySelector('.high-score')
 let cells = []
 
 
@@ -103,7 +104,7 @@ function createGrid() {
   gameActive = true
   grid.replaceChildren()
   for (let i = 0; i < cellCount; i++) {
-    const cell = document.createElement('div')
+    const cell = document.createElement('button')
     cell.style.width = `${100 / width}%`
     cell.style.height = `${100 / height}%`
     cell.innerText = '-'
@@ -134,9 +135,11 @@ function createGrid() {
   } else if (levelChoice === levels[1]) {
     grid.style.width = '300px'
     grid.style.height = '300px'
+    grid.style.backgroundImage = 'url(images/timber-house.jpeg)'
   } else if (levelChoice === levels[2]) {
     grid.style.width = '600px'
     grid.style.height = '300px'
+    grid.style.backgroundImage = 'url(images/brick-house.jpeg)'
   }
 
 
@@ -225,7 +228,14 @@ function startTime() {
   clearInterval(interval)
   interval = setInterval(() => {
     time++
+    // High score
+    if (parseInt(localStorage.getItem('high-score')) < time) {
+      localStorage.setItem('high-score', time)
+      highScoreDisplay.innerText = time
+    }
+    // Score = time display
     timeDisplay.innerText = time
+
   }, 1000)
 }
 
@@ -236,6 +246,7 @@ function reveal(event) {
   if (cellClicked.classList.contains('bomb')) {
     allBombs.forEach(function (item) {
       item.classList.replace('bomb', 'bombClicked')
+      item.innerText = '🐺'
       clearInterval(interval)
     })
   } else if (cellClicked.classList.contains('nbr')) {
@@ -271,9 +282,10 @@ function openEmptyBubbles(cellClicked) {
 }
 
 function addFlag(event) {
+  event.preventDefault()
   startTime()
   const allBombs = document.querySelectorAll('.bomb')
-  console.log(allBombs)
+  const allCells = document.querySelectorAll('.cell')
   if (event.target.classList.contains('flag')) {
     event.target.classList.remove('flag')
     bombsNbr++
@@ -288,17 +300,19 @@ function addFlag(event) {
   allBombs.forEach(function (item) {
     if (item.classList.contains('flag')) {
       allFlags.push(item)
-      if (allFlags.length === allBombs.length){
+      if (allFlags.length === allBombs.length) {
         clearInterval(interval)
+        allCells.forEach(function (cell) {
+          cell.setAttribute('disabled', true)
+        })
       }
     }
   })
 }
 
-
-
 function clearAllInterval() {
 }
+
 //! Events
 for (const button of levelButtons) {
   button.addEventListener('click', updateGrid)
@@ -315,3 +329,5 @@ resetButton.addEventListener('click', updateGrid)
 
 //! Page Load
 createGrid()
+localStorage.setItem('high-score', 0)
+highScoreDisplay.innerText = localStorage.getItem('high-score')

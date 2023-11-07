@@ -13,7 +13,6 @@
   box-sizing: border-box;
   border: 1px solid gray;
   font-family: helvetica;
-  padding: 5px;
 }
 
 body {
@@ -76,29 +75,35 @@ section {
 }
 
 .grid {
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
-  height: 110px;
-  width: 110px;
-  /* aspect-ratio: 1; */
+  background: rgb(255, 255, 255, 0.8);
+  background-image: url('../images/hay-house.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: color-burn;
+  /* height: 110px;
+  width: 110px; */
   padding: 0;
   display: block;
 }
 
-.nbr .safeZone {
-  color: transparent
-}
-.bomb {
-  color: red
-}
-
-.cell {
+.grid button {
   /* font-size: 0.5em; */
   border: 1px solid lightgrey;
   display: inline-flex;
+  vertical-align: middle;
   justify-content: center;
   align-items: center;
   /* color: transparent */
 }
+
+.nbr, .safeZone, .bomb {
+  color: transparent
+}
+.bomb{
+  color: red;
+}
+
 
 footer {
   height: 3em;
@@ -112,21 +117,26 @@ footer {
   aspect-ratio: 1;
 }
 
-
-
 .safeZoneClicked {
-  background-image: url('../images/cat.png');
+  background-color: transparent;
+  color:transparent
+  /* background-image: url('../images/cat.png');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
+}
+
+.nbrClicked {
+  background-color: transparent;
 }
 
 .bombClicked {
-  color: transparent;
-  background-image: url('../images/mole.png');
+  background-color: transparent;
+  /* color: transparent; */
+  /* background-image: url('../images/mole.png');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
 }
 
 .flag {
@@ -164,6 +174,3 @@ footer {
   color: var(--nbrColor8);
 }
 
-.nbrClicked {
-  color: greenyellow;
-}
