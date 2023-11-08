@@ -184,6 +184,7 @@ footer button {
   background-blend-mode: lighten;
   padding: 0;
   display: block;
+  cursor: pointer;
 }
 
 .cell {
