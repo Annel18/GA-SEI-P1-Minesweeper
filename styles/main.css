@@ -15,10 +15,6 @@
   font-family: helvetica;
 }
 
-/* .bomb {
-  color: red;
-} */
-
 body {
   margin: auto;
   display: flex;
@@ -274,3 +270,7 @@ footer button {
 #nbr8 {
   color: var(--nbrColor8);
 }
+/* 
+.bomb {
+  color: red;
+} */

@@ -10,10 +10,7 @@ const rulesButton = document.querySelector('.rules')
 const closeButtons = document.getElementsByClassName('close')
 let cells = []
 
-console.log(difficultyDisplay)
-
 //! Variables
-let gameActive = false
 let time
 
 const levels = [
@@ -37,7 +34,7 @@ function resetVariables() {
   grid.replaceChildren()
   cells = []
   time = 0
-  for (const display of timeDisplay){
+  for (const display of timeDisplay) {
     display.innerText = time
   }
   bombsDisplay.innerText = bombsNbr
@@ -130,7 +127,6 @@ function createGrid() {
 
 function updateGrid(evt) {
   resetVariables()
-  gameActive = true
   if (evt.target.classList.contains('easy')) {
     levelChoice = levels[0]
   } else if (evt.target.classList.contains('hard')) {
@@ -138,6 +134,7 @@ function updateGrid(evt) {
   } else if (evt.target.classList.contains('expert')) {
     levelChoice = levels[2]
   }
+  // gameActive = true
   width = levelChoice.width
   height = levelChoice.height
   cellCount = width * height
@@ -210,7 +207,7 @@ function startGame() {
   clearInterval(interval)
   interval = setInterval(() => {
     time++
-    for (const display of timeDisplay){
+    for (const display of timeDisplay) {
       display.innerText = time
     }
   }, 1000)
@@ -219,18 +216,22 @@ function startGame() {
 function winGame() {
   const allCells = document.querySelectorAll('.cell')
   const openCells = []
-  allCells.forEach(function (cell){
-    if (cell.classList.contains('nbrClicked') || cell.classList.contains('flag') || cell.classList.contains('safeZoneClicked')){
+  allCells.forEach(function (cell) {
+    if (cell.classList.contains('nbrClicked') || cell.classList.contains('flag') || cell.classList.contains('safeZoneClicked')) {
       openCells.push(cell)
-      if (openCells.length === cellCount){
+      if (openCells.length === cellCount) {
         clearInterval(interval)
         difficultyDisplay.innerText = levelChoice.difficulty
         document.getElementById('win').classList.add('popupDisplay')
       }
     }
   })
-  // timeDisplay.innerText = time
 }
+
+const allCellClicked = []
+
+
+
 
 function reveal(event) {
   startGame()
@@ -238,30 +239,38 @@ function reveal(event) {
   const allBombs = document.querySelectorAll('.bomb')
   const allCells = document.querySelectorAll('.cell')
   if (cellClicked.classList.contains('bomb')) {
-    allBombs.forEach(function (item) {
-      item.classList.replace('bomb', 'bombClicked')
-      clearInterval(interval)
-      resetButton.style.backgroundImage = 'url(images/badWolf.png)'
-      document.getElementById('lost').classList.add('popupDisplay')
-      allCells.forEach(function (cell) {
-        cell.setAttribute('disabled', true)
-        cell.removeEventListener('contextmenu', addFlag)
-        cell.removeEventListener('click', reveal)
+    cellClicked.classList.replace('bomb', 'bombClicked')
+    allCellClicked.push(cellClicked)
+    if (allCellClicked[0].classList.contains('bombClicked')) {
+      updateGrid(event)
+    } else {
+      allBombs.forEach(function (item) {
+        item.classList.replace('bomb', 'bombClicked')
+        clearInterval(interval)
+        resetButton.style.backgroundImage = 'url(images/badWolf.png)'
+        document.getElementById('lost').classList.add('popupDisplay')
+        allCells.forEach(function (cell) {
+          cell.setAttribute('disabled', true)
+          cell.removeEventListener('contextmenu', addFlag)
+          cell.removeEventListener('click', reveal)
+        })
       })
-    })
+    }
   } else if (cellClicked.classList.contains('nbr')) {
     cellClicked.classList.replace('nbr', 'nbrClicked')
     cellClicked.removeEventListener('contextmenu', addFlag)
+    allCellClicked.push(cellClicked)
     winGame()
   } else if (cellClicked.classList.contains('safeZone')) {
     cellClicked.classList.replace('safeZone', 'safeZoneClicked')
     cellClicked.removeEventListener('contextmenu', addFlag)
+    allCellClicked.push(cellClicked)
     openEmptyBubbles(cellClicked)
   }
   if (cellClicked.classList.contains('nbrClicked')) {
     cellClicked.setAttribute('id', 'nbr' + cellClicked.innerText)
   }
-  
+  console.log(allCellClicked[0])
 }
 
 function openEmptyBubbles(cellClicked) {
@@ -336,22 +345,8 @@ function eventsOnCells() {
   }
 }
 
-// function removeEventsOnCells() {
-//   for (const cell of cells) {
-//     cell.removeEventListener('click', reveal)
-//     cell.removeEventListener('click', addFlag)
-//   }
-// }
-
-// function removeFlagEventsOnCells() {
-//   for (const cell of cells) {
-//     cell.removeEventListener('click', addFlag)
-//   }
-// }
-
 resetButton.addEventListener('click', updateGrid)
 
 //! Page Load
 createGrid()
 localStorage.setItem('high-score', 0)
-// highScoreDisplay.innerText = localStorage.getItem('high-score')
