@@ -41,7 +41,8 @@ function resetVariables() {
     display.innerText = time
   }
   bombsDisplay.innerText = bombsNbr
-  gameActive = false
+  resetButton.style.backgroundImage = 'url(images/reset.png)'
+  // gameActive = false
 }
 
 class SurroundingCells {
@@ -57,32 +58,32 @@ class SurroundingCells {
     this.W = this.cell - 1
   }
 
-  arrayOfAdjacentCells() {
+  arrayOfSurroundingCells() {
     if (this.cell === 0) { //Top Left Corner
-      return [this.E, this.S]
+      return [this.E, this.S, this.SE]
     } else if (this.cell === width - 1) { //Top Right Corner
-      return [this.S, this.W]
+      return [this.S, this.W, this.SW]
     } else if (this.cell === cellCount - 1) { //Bottom Right Corner
-      return [this.N, this.W]
+      return [this.N, this.W, this.NW]
     } else if (this.cell === cellCount - width) { //Bottom Left Corner
-      return [this.N, this.E]
+      return [this.N, this.E, this.NE]
     } else if (this.cell < width) { //First Row
-      return [this.E, this.S, this.W]
+      return [this.E, this.S, this.W, this.SE, this.SW]
     } else if ((this.cell + 1) % width === 0) { //Last Column
-      return [this.N, this.S, this.W]
+      return [this.N, this.S, this.W, this.NW, this.SW]
     } else if (this.cell >= cellCount - width) { //Bottom Row
-      return [this.N, this.E, this.W]
+      return [this.N, this.E, this.W, this.NE, this.NW]
     } else if (this.cell % width === 0) { //First Column
-      return [this.N, this.E, this.S]
-    } else {
-      return [this.N, this.E, this.S, this.W]
+      return [this.N, this.E, this.S, this.NE, this.SE]
+    } else { // midfield
+      return [this.N, this.E, this.S, this.W, this.NW, this.NE, this.SE, this.SW]
     }
   }
 }
 
 function createGrid() {
   resetVariables()
-  gameActive = true
+  // gameActive = true
   grid.replaceChildren()
   for (let i = 0; i < cellCount; i++) {
     const cell = document.createElement('div')
@@ -239,8 +240,8 @@ function reveal(event) {
   if (cellClicked.classList.contains('bomb')) {
     allBombs.forEach(function (item) {
       item.classList.replace('bomb', 'bombClicked')
-      item.innerText = '🐺'
       clearInterval(interval)
+      resetButton.style.backgroundImage = 'url(images/badWolf.png)'
       document.getElementById('lost').classList.add('popupDisplay')
       allCells.forEach(function (cell) {
         cell.setAttribute('disabled', true)
@@ -267,7 +268,7 @@ function openEmptyBubbles(cellClicked) {
   const cellClickedIndex = cells.indexOf(cellClicked)
 
   let fieldInPlay = new SurroundingCells(cellClickedIndex)
-  let arrayToCheck = fieldInPlay.arrayOfAdjacentCells()
+  let arrayToCheck = fieldInPlay.arrayOfSurroundingCells()
 
   arrayToCheck.forEach(extendFieldToCheck)
 
@@ -276,7 +277,7 @@ function openEmptyBubbles(cellClicked) {
       cells[query].classList.replace('safeZone', 'safeZoneClicked')
       cells[query].removeEventListener('contextmenu', addFlag)
       fieldInPlay = new SurroundingCells(query)
-      arrayToCheck = fieldInPlay.arrayOfAdjacentCells(query)
+      arrayToCheck = fieldInPlay.arrayOfSurroundingCells(query)
       arrayToCheck.forEach(extendFieldToCheck)
     } if (cells[query].classList.contains('nbr')) {
       cells[query].classList.replace('nbr', 'nbrClicked')

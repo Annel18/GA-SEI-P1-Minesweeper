@@ -27,8 +27,7 @@ body {
 header {
   display: flex;
   justify-content: space-between;
-  height: calc(100vh / 6);
-  min-height: 115px;
+  height: 8.5em;
   padding: 1em;
   border-bottom: 1px solid var(--nbrColor1);
 }
@@ -38,6 +37,7 @@ h1 {
   text-align: left;
   vertical-align: text-top;
   justify-content: center;
+  min-width: 10em;
 }
 
 h2 {
@@ -89,7 +89,7 @@ main {
 section {
   display: flex;
   flex-direction: column;
-  height: calc(100vh * 4 / 5 - 3em);
+  height: calc(100vh - 8.5em - 3em);
   min-width: 800px;
 
 }
@@ -118,14 +118,22 @@ section {
 
 #reset {
   margin: 0 7em 0 0;
-  display: flex;
   height: 100%;
-  aspect-ratio: 1;
-  justify-self: center;
+  aspect-ratio: 2 / 1;
+  /* background-color: white; */
+  background-image: url(../images/reset.png);
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  border-top: none;
+  border-right: 1px solid var(--nbrColor1);
+  border-bottom: none;
+  border-left: 1px solid var(--nbrColor1);
+  padding:3px;
+  box-shadow: inset 3px 3px white, inset -3px -3px lightgrey;
 }
 
 footer {
-  margin-top: .5em;
   border-top: 1px solid var(--nbrColor1);;
   display: flex;
   height: 3em;
@@ -159,7 +167,7 @@ footer button {
 }
 
 .grid-container {
-  margin-top: .5em;
+  margin: 0.5em 0 0.5em 0;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -213,8 +221,9 @@ footer button {
 }
 
 .bombClicked {
+  color: transparent;
   background-color: transparent;
-  background-image: url('../images/wolf.png');
+  background-image: url('../images/badWolf.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
