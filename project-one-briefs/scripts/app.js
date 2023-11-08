@@ -3,21 +3,23 @@ const grid = document.querySelector('.grid')
 const gridContainer = document.querySelector('.grid-container')
 const levelButtons = document.getElementsByClassName('levels')
 const resetButton = document.querySelector('#reset')
-const timeDisplay = document.querySelector('#time')
+const timeDisplay = document.querySelectorAll('#time')
+const difficultyDisplay = document.getElementById('difficulty')
 const bombsDisplay = document.querySelector('#bombsNbr')
 const rulesButton = document.querySelector('.rules')
-const closeButton = document.getElementsByClassName('close')
+const closeButtons = document.getElementsByClassName('close')
 let cells = []
 
+console.log(difficultyDisplay)
 
 //! Variables
 let gameActive = false
 let time
 
 const levels = [
-  { difficulty: 'easy', bombsNbr: 10, width: 8, height: 8 },
-  { difficulty: 'hard', bombsNbr: 40, width: 16, height: 16 },
-  { difficulty: 'expert', bombsNbr: 80, width: 32, height: 16 }
+  { difficulty: 'BEGINNER', bombsNbr: 10, width: 8, height: 8 },
+  { difficulty: 'INTERMEDIATE', bombsNbr: 40, width: 16, height: 16 },
+  { difficulty: 'EXPERT', bombsNbr: 80, width: 32, height: 16 }
 ]
 
 let levelChoice = levels[0]
@@ -35,7 +37,9 @@ function resetVariables() {
   grid.replaceChildren()
   cells = []
   time = 0
-  timeDisplay.innerText = time
+  for (const display of timeDisplay){
+    display.innerText = time
+  }
   bombsDisplay.innerText = bombsNbr
   gameActive = false
 }
@@ -74,38 +78,14 @@ class SurroundingCells {
       return [this.N, this.E, this.S, this.W]
     }
   }
-
-  arrayOfSurroundingCells() {
-    if (this.cell === 0) { //Top Left Corner
-      return this.arrayOfAdjacentCells().push([this.SE])
-    } else if (this.cell === width - 1) { //Top Right Corner
-      return this.arrayOfAdjacentCells().push([this.SW])
-    } else if (this.cell === cellCount - 1) { //Bottom Right Corner
-      return this.arrayOfAdjacentCells().push([this.NW])
-    } else if (this.cell === cellCount - width) { //Bottom Left Corner
-      return this.arrayOfAdjacentCells().push([this.NE])
-    } else if (this.cell < width) { //First Row
-      return this.arrayOfAdjacentCells().push([this.SE, this.SW])
-    } else if ((this.cell + 1) % width === 0) { //Last Column
-      return this.arrayOfAdjacentCells().push([this.NW, this.SW])
-    } else if (this.cell >= cellCount - width) { //Bottom Row
-      return this.arrayOfAdjacentCells().push([this.NE, this.NW])
-    } else if (this.cell % width === 0) { //First Column
-      return this.arrayOfAdjacentCells().push([this.NE, this.SE])
-    } else {
-      return this.arrayOfAdjacentCells().push([this.NE, this.NW, this.SW, this.SE])
-    }
-  }
 }
-
-//! Execution
 
 function createGrid() {
   resetVariables()
   gameActive = true
   grid.replaceChildren()
   for (let i = 0; i < cellCount; i++) {
-    const cell = document.createElement('button')
+    const cell = document.createElement('div')
     cell.style.width = `${100 / width}%`
     cell.style.height = `${100 / height}%`
     cell.innerText = '-'
@@ -113,7 +93,6 @@ function createGrid() {
     cells.push(cell)
     cell.classList.add('cell')
     eventsOnCells()
-
   }
   mineField()
 
@@ -146,12 +125,9 @@ function createGrid() {
     grid.style.backgroundImage = 'url(images/brick-house.jpeg)'
     gridContainer.style.backgroundImage = 'url(images/brick-bckgnd.jpeg)'
   }
-
-
 }
 
 function updateGrid(evt) {
-
   resetVariables()
   gameActive = true
   if (evt.target.classList.contains('easy')) {
@@ -165,13 +141,11 @@ function updateGrid(evt) {
   height = levelChoice.height
   cellCount = width * height
   bombsNbr = levelChoice.bombsNbr
-
   createGrid()
 }
 
 function dangerNbr(cell) {
   let dangerCount = 0
-
   const NW = cell - width - 1
   const N = cell - width
   const NE = cell - width + 1
@@ -229,17 +203,36 @@ function mineField() {
   }
 }
 
-function startTime() {
+//! Execution
+
+function startGame() {
   clearInterval(interval)
   interval = setInterval(() => {
     time++
-    timeDisplay.innerText = time
-
+    for (const display of timeDisplay){
+      display.innerText = time
+    }
   }, 1000)
 }
 
+function winGame() {
+  const allCells = document.querySelectorAll('.cell')
+  const openCells = []
+  allCells.forEach(function (cell){
+    if (cell.classList.contains('nbrClicked') || cell.classList.contains('flag') || cell.classList.contains('safeZoneClicked')){
+      openCells.push(cell)
+      if (openCells.length === cellCount){
+        clearInterval(interval)
+        difficultyDisplay.innerText = levelChoice.difficulty
+        document.getElementById('win').classList.add('popupDisplay')
+      }
+    }
+  })
+  // timeDisplay.innerText = time
+}
+
 function reveal(event) {
-  startTime()
+  startGame()
   const cellClicked = event.target
   const allBombs = document.querySelectorAll('.bomb')
   const allCells = document.querySelectorAll('.cell')
@@ -248,19 +241,26 @@ function reveal(event) {
       item.classList.replace('bomb', 'bombClicked')
       item.innerText = '🐺'
       clearInterval(interval)
+      document.getElementById('lost').classList.add('popupDisplay')
       allCells.forEach(function (cell) {
         cell.setAttribute('disabled', true)
+        cell.removeEventListener('contextmenu', addFlag)
+        cell.removeEventListener('click', reveal)
       })
     })
   } else if (cellClicked.classList.contains('nbr')) {
     cellClicked.classList.replace('nbr', 'nbrClicked')
+    cellClicked.removeEventListener('contextmenu', addFlag)
+    winGame()
   } else if (cellClicked.classList.contains('safeZone')) {
     cellClicked.classList.replace('safeZone', 'safeZoneClicked')
+    cellClicked.removeEventListener('contextmenu', addFlag)
     openEmptyBubbles(cellClicked)
   }
   if (cellClicked.classList.contains('nbrClicked')) {
     cellClicked.setAttribute('id', 'nbr' + cellClicked.innerText)
   }
+  
 }
 
 function openEmptyBubbles(cellClicked) {
@@ -274,11 +274,13 @@ function openEmptyBubbles(cellClicked) {
   function extendFieldToCheck(query) {
     while (cells[query].classList.contains('safeZone')) {
       cells[query].classList.replace('safeZone', 'safeZoneClicked')
+      cells[query].removeEventListener('contextmenu', addFlag)
       fieldInPlay = new SurroundingCells(query)
       arrayToCheck = fieldInPlay.arrayOfAdjacentCells(query)
       arrayToCheck.forEach(extendFieldToCheck)
     } if (cells[query].classList.contains('nbr')) {
       cells[query].classList.replace('nbr', 'nbrClicked')
+      cells[query].removeEventListener('contextmenu', addFlag)
       cells[query].setAttribute('id', 'nbr' + cells[query].innerText)
     }
   }
@@ -286,31 +288,19 @@ function openEmptyBubbles(cellClicked) {
 
 function addFlag(event) {
   event.preventDefault()
-  startTime()
-  const allBombs = document.querySelectorAll('.bomb')
-  const allCells = document.getElementsByClassName('cell')
+  startGame()
   if (event.target.classList.contains('flag')) {
     event.target.classList.remove('flag')
+    eventsOnCells()
     bombsNbr++
     bombsDisplay.innerText = bombsNbr
   } else if (!event.target.classList.contains('flag')) {
     event.target.classList.add('flag')
+    event.target.removeEventListener('click', reveal)
     bombsNbr--
     bombsDisplay.innerText = bombsNbr
+    winGame()
   }
-
-  const allFlags = []
-  allBombs.forEach(function (item) {
-    if (item.classList.contains('flag')) {
-      allFlags.push(item)
-      if (allFlags.length === allBombs.length) {
-        clearInterval(interval)
-        allCells.forEach(function (cell) {
-          cell.setAttribute('disabled', true)
-        })
-      }
-    }
-  })
 }
 
 function clearAllInterval() {
@@ -320,20 +310,23 @@ function clearAllInterval() {
 for (const button of levelButtons) {
   button.addEventListener('click', updateGrid)
 }
-
 rulesButton.addEventListener('click', popupRules)
+
 function popupRules() {
   document.getElementById('rules').classList.add('popupDisplay')
 }
 
-for (const button of closeButton) {
-  button.addEventListener('click', function popupClose(){
-    document.getElementById('rules').classList.remove('popupDisplay')
-  })
+for (const button of closeButtons) {
+  button.addEventListener('click', popupClose)
 }
 
+function popupClose() {
+  document.getElementById('rules').classList.remove('popupDisplay')
+  document.getElementById('lost').classList.remove('popupDisplay')
+  document.getElementById('win').classList.remove('popupDisplay')
+}
 
-
+const activated = true
 
 function eventsOnCells() {
   for (const cell of cells) {
@@ -341,6 +334,19 @@ function eventsOnCells() {
     cell.addEventListener('contextmenu', addFlag)
   }
 }
+
+// function removeEventsOnCells() {
+//   for (const cell of cells) {
+//     cell.removeEventListener('click', reveal)
+//     cell.removeEventListener('click', addFlag)
+//   }
+// }
+
+// function removeFlagEventsOnCells() {
+//   for (const cell of cells) {
+//     cell.removeEventListener('click', addFlag)
+//   }
+// }
 
 resetButton.addEventListener('click', updateGrid)
 
