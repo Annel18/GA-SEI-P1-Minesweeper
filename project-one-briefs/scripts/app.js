@@ -5,7 +5,8 @@ const levelButtons = document.getElementsByClassName('levels')
 const resetButton = document.querySelector('#reset')
 const timeDisplay = document.querySelector('#time')
 const bombsDisplay = document.querySelector('#bombsNbr')
-const highScoreDisplay = document.querySelector('.high-score')
+const rulesButton = document.querySelector('.rules')
+const closeButton = document.getElementsByClassName('close')
 let cells = []
 
 
@@ -34,8 +35,8 @@ function resetVariables() {
   grid.replaceChildren()
   cells = []
   time = 0
-  timeDisplay.innerText = `TIME: ${time}`
-  bombsDisplay.innerText = `BOMBS REMAINING: ${bombsNbr}`
+  timeDisplay.innerText = time
+  bombsDisplay.innerText = bombsNbr
   gameActive = false
 }
 
@@ -132,6 +133,7 @@ function createGrid() {
   if (levelChoice === levels[0]) {
     grid.style.width = '200px'
     grid.style.height = '200px'
+    grid.style.backgroundImage = 'url(images/hay-house.jpeg)'
     gridContainer.style.backgroundImage = 'url(images/hayStack.jpeg)'
   } else if (levelChoice === levels[1]) {
     grid.style.width = '400px'
@@ -231,13 +233,7 @@ function startTime() {
   clearInterval(interval)
   interval = setInterval(() => {
     time++
-    // High score
-    if (parseInt(localStorage.getItem('high-score')) < time) {
-      localStorage.setItem('high-score', time)
-      highScoreDisplay.innerText = time
-    }
-    // Score = time display
-    timeDisplay.innerText = `TIME: ${time}`
+    timeDisplay.innerText = time
 
   }, 1000)
 }
@@ -296,11 +292,11 @@ function addFlag(event) {
   if (event.target.classList.contains('flag')) {
     event.target.classList.remove('flag')
     bombsNbr++
-    bombsDisplay.innerText = `BOMBS REMAINING: ${bombsNbr}`
+    bombsDisplay.innerText = bombsNbr
   } else if (!event.target.classList.contains('flag')) {
     event.target.classList.add('flag')
     bombsNbr--
-    bombsDisplay.innerText = `BOMBS REMAINING: ${bombsNbr}`
+    bombsDisplay.innerText = bombsNbr
   }
 
   const allFlags = []
@@ -325,6 +321,20 @@ for (const button of levelButtons) {
   button.addEventListener('click', updateGrid)
 }
 
+rulesButton.addEventListener('click', popupRules)
+function popupRules() {
+  document.getElementById('rules').classList.add('popupDisplay')
+}
+
+for (const button of closeButton) {
+  button.addEventListener('click', function popupClose(){
+    document.getElementById('rules').classList.remove('popupDisplay')
+  })
+}
+
+
+
+
 function eventsOnCells() {
   for (const cell of cells) {
     cell.addEventListener('click', reveal)
@@ -337,4 +347,4 @@ resetButton.addEventListener('click', updateGrid)
 //! Page Load
 createGrid()
 localStorage.setItem('high-score', 0)
-highScoreDisplay.innerText = localStorage.getItem('high-score')
+// highScoreDisplay.innerText = localStorage.getItem('high-score')
