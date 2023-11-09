@@ -1,5 +1,5 @@
 :root {
-  --nbrColor1: #5badff;
+  --nbrColor1: #7bbdff;
   --nbrColor2: #c7ff58;
   --nbrColor3: #f84f37;
   --nbrColor4: #ffb339;
@@ -45,6 +45,7 @@ h2 {
 .segment7 {
   font-family: 'Segment7Standard';
   color: #478cd2;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   font-size: xx-large;
   vertical-align: middle;
 }
@@ -66,7 +67,9 @@ h2 {
 
 button:hover {
   cursor: pointer;
+  box-shadow: inset 5px 5px white, inset -5px -5px lightgrey;
 }
+
 
 .side1,
 .side2 {
@@ -127,7 +130,7 @@ section {
   border-bottom: none;
   border-left: 1px solid var(--nbrColor1);
   padding:3px;
-  box-shadow: inset 3px 3px white, inset -3px -3px lightgrey;
+  /* box-shadow: inset 3px 3px white, inset -3px -3px lightgrey; */
 }
 
 footer {
@@ -185,7 +188,7 @@ footer button {
   background-blend-mode: lighten;
   padding: 0;
   display: block;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .cell {
@@ -206,6 +209,12 @@ footer button {
   box-shadow: inset 3px 3px white, inset -3px -3px lightgrey;
 }
 
+.nbr:hover,
+.safeZone:hover,
+.bomb:hover {
+  cursor: pointer;
+  box-shadow: none;
+}
 
 .safeZoneClicked {
   background-color: transparent;
