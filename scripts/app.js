@@ -23,7 +23,7 @@ const levels = [
   { difficulty: 'BEGINNER', bombsNbr: 10, width: 8, height: 8 },
   { difficulty: 'INTERMEDIATE', bombsNbr: 40, width: 16, height: 16 },
   { difficulty: 'EXPERT', bombsNbr: 80, width: 32, height: 16 },
-  { difficulty: 'CUSTOM', bombsNbr: 6, width: 6, height: 6 }
+  { difficulty: 'CUSTOM', bombsNbr: 0, width: 0, height: 0 }
 ]
 
 
@@ -53,9 +53,33 @@ function resetVariables() {
   // gameActive = false
 }
 
+function updateGrid(evt) {
+  resetVariables()
+  if (evt.target.classList.contains('easy')) {
+    levelChoice = levels[0]
+  } else if (evt.target.classList.contains('hard')) {
+    levelChoice = levels[1]
+  } else if (evt.target.classList.contains('expert')) {
+    levelChoice = levels[2]
+  } else if (evt.target.classList.contains('custom')) {
+    customForm.classList.add('popupDisplay')
+    levels[3].width = parseInt(customWidth.value)
+    levels[3].height = parseInt(customHeight.value)
+    levels[3].bombsNbr = parseInt(customBombs.value)
+    console.log(levels[3].width)
+    levelChoice = levels[3]
+  }
+
+  width = levelChoice.width
+  height = levelChoice.height
+  cellCount = width * height
+  bombsNbr = levelChoice.bombsNbr
+  createGrid()
+}
+
+
 function createGrid() {
   resetVariables()
-  // gameActive = true
   grid.replaceChildren()
   for (let i = 0; i < cellCount; i++) {
     const cell = document.createElement('div')
@@ -83,8 +107,8 @@ function createGrid() {
   })
 
   if (levelChoice === levels[0]) {
-    grid.style.width = '200px'
-    grid.style.height = '200px'
+    grid.style.width = `${(levels[0].width * 100 / 4).toString()}px`
+    grid.style.height = `${(levels[0].height * 100 / 4).toString()}px`
     grid.style.backgroundImage = 'url(images/hay-house.jpeg)'
     gridContainer.style.backgroundImage = 'url(images/hayStack.jpeg)'
   } else if (levelChoice === levels[1]) {
@@ -98,36 +122,13 @@ function createGrid() {
     grid.style.backgroundImage = 'url(images/brick-house.jpeg)'
     gridContainer.style.backgroundImage = 'url(images/brick-bckgnd.jpeg)'
   } else if (levelChoice === levels[3]) {
-    grid.style.width = `${(width / 4).toString()}px`
-    grid.style.width = `${(height / 4).toString()}px`
+    grid.style.width = `${(levels[3].width * 100 / 4).toString()}px`
+    grid.style.width = `${(levels[3].height * 100 / 4).toString()}px`
     grid.style.backgroundImage = 'url(images/brick-house.jpeg)'
     gridContainer.style.backgroundImage = 'url(images/brick-bckgnd.jpeg)'
   }
 }
 
-
-function updateGrid(evt) {
-  resetVariables()
-  if (evt.target.classList.contains('easy')) {
-    levelChoice = levels[0]
-  } else if (evt.target.classList.contains('hard')) {
-    levelChoice = levels[1]
-  } else if (evt.target.classList.contains('expert')) {
-    levelChoice = levels[2]
-  } else if (evt.target.classList.contains('custom')) {
-    customForm.classList.add('popupDisplay')
-    levels[3].width = parseInt(customWidth.value)
-    levels[3].height = parseInt(customHeight.value)
-    levels[3].bombsNbr = parseInt(customBombs.value)
-    levelChoice = levels[3]
-  }
-
-  width = levelChoice.width
-  height = levelChoice.height
-  cellCount = width * height
-  bombsNbr = levelChoice.bombsNbr
-  createGrid()
-}
 
 class SurroundingCells {
   constructor(cell) {
