@@ -45,7 +45,6 @@ h2 {
 .segment7 {
   font-family: 'Segment7Standard';
   color: #478cd2;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   font-size: xx-large;
   vertical-align: middle;
 }
