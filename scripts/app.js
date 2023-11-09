@@ -9,6 +9,7 @@ const bombsDisplay = document.querySelector('#bombsNbr')
 const rulesButton = document.querySelector('.rules')
 const closeButtons = document.getElementsByClassName('close')
 let cells = []
+const allCellClicked = []
 
 //! Variables
 let time
@@ -228,11 +229,6 @@ function winGame() {
   })
 }
 
-const allCellClicked = []
-
-
-
-
 function reveal(event) {
   startGame()
   const cellClicked = event.target
@@ -243,6 +239,7 @@ function reveal(event) {
     allCellClicked.push(cellClicked)
     if (allCellClicked[0].classList.contains('bombClicked')) {
       updateGrid(event)
+      allCellClicked.pop(cellClicked)
     } else {
       allBombs.forEach(function (item) {
         item.classList.replace('bomb', 'bombClicked')

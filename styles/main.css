@@ -1,11 +1,11 @@
 :root {
-  --nbrColor1: #478cd2;
-  --nbrColor2: #a3d149;
+  --nbrColor1: #5badff;
+  --nbrColor2: #c7ff58;
   --nbrColor3: #f84f37;
-  --nbrColor4: #f8b446;
-  --nbrColor5: #8e4dbd;
-  --nbrColor6: #5fd1bc;
-  --nbrColor7: #d35697;
+  --nbrColor4: #ffb339;
+  --nbrColor5: #c472ff;
+  --nbrColor6: #76ffe6;
+  --nbrColor7: #ff6ab7;
   --nbrColor8: #fcf934;
 }
 
@@ -178,7 +178,7 @@ footer button {
 }
 
 .grid {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.6);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -216,6 +216,7 @@ footer button {
 .nbrClicked {
   background-color: transparent;
   box-shadow: unset;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 .bombClicked {
