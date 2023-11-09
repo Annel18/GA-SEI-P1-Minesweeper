@@ -66,7 +66,7 @@ function updateGrid(evt) {
     levels[3].width = parseInt(customWidth.value)
     levels[3].height = parseInt(customHeight.value)
     levels[3].bombsNbr = parseInt(customBombs.value)
-    console.log(levels[3].width)
+    // console.log(levels[3].width)
     levelChoice = levels[3]
   }
 
@@ -289,7 +289,7 @@ function reveal(event) {
   if (cellClicked.classList.contains('nbrClicked')) {
     cellClicked.setAttribute('id', 'nbr' + cellClicked.innerText)
   }
-  console.log(allCellClicked[0])
+  // console.log(allCellClicked[0])
 }
 
 function openEmptyBubbles(cellClicked) {
