@@ -9,7 +9,7 @@ const bombsDisplay = document.querySelector('#bombsNbr')
 const rulesButton = document.querySelector('.rules')
 const closeButtons = document.getElementsByClassName('close')
 let cells = []
-const allCellClicked = []
+let allCellClicked = []
 
 //! Variables
 let time
@@ -34,6 +34,7 @@ function resetVariables() {
   clearInterval(interval)
   grid.replaceChildren()
   cells = []
+  allCellClicked = []
   time = 0
   for (const display of timeDisplay) {
     display.innerText = time
@@ -239,7 +240,6 @@ function reveal(event) {
     allCellClicked.push(cellClicked)
     if (allCellClicked[0].classList.contains('bombClicked')) {
       updateGrid(event)
-      allCellClicked.pop(cellClicked)
     } else {
       allBombs.forEach(function (item) {
         item.classList.replace('bomb', 'bombClicked')
