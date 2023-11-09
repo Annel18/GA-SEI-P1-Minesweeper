@@ -87,8 +87,7 @@ main {
 section {
   display: flex;
   flex-direction: column;
-
-  /* height: calc(100vh - 8.5em - 3em); */
+  min-height: calc(100vh - 8.5em - 3em);
   min-width: 800px;
 
 }
