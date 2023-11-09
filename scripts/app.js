@@ -217,7 +217,7 @@ function winGame() {
   const allCells = document.querySelectorAll('.cell')
   const openCells = []
   allCells.forEach(function (cell) {
-    if (cell.classList.contains('nbrClicked') || cell.classList.contains('flag') || cell.classList.contains('safeZoneClicked')) {
+    if (cell.classList.contains('nbrClicked') || cell.classList.contains('flag') || cell.classList.contains('safeZoneClicked') || cell.classList.contains('bomb')) {
       openCells.push(cell)
       if (openCells.length === cellCount) {
         clearInterval(interval)
