@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minesweeper</title>
   <link rel="stylesheet" href="styles/main.css">
-  <link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/segment7" type="text/css"/>
+  <link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/segment7" type="text/css" />
   <script defer src="scripts/app.js"></script>
 </head>
 
@@ -14,18 +14,19 @@
   <div class="side1"></div>
   <main>
     <header>
-      <h1>The Three Little Pigs <br>Minesweeper</h1>
+      <h1>The Three Little Pigs <br>Wolfsweeper</h1>
       <div class="levels-container">
         <button class="levels easy">🌾 Hay House</button>
         <button class="levels hard">🪵 Timber House</button>
         <button class="levels expert">🧱 Brick House</button>
+        <button class="levels custom"> Custom House</button>
       </div>
       <!-- <div class="high-score"></div> -->
     </header>
     <section>
       <div class="hero">
         <div>
-          <h2>WOLVES REMAINING:</h2> 
+          <h2>WOLVES REMAINING:</h2>
           <h2 class="segment7" id="bombsNbr"></h2>
         </div>
         <button id="reset"></button>
@@ -38,7 +39,7 @@
         <div class="grid"></div>
         <div class="popup" id="lost">
           <p>TRY AGAIN!</p>
-          <P>The Big Bad Wolf has blown your house away. <br>Build your house again.</P>
+          <P>The Big Bad Wolf has blown your house down. <br>Build your house again.</P>
           <button class="close">Close</button>
         </div>
         <div class="popup" id="win">
@@ -47,14 +48,34 @@
           <button class="close">Close</button>
         </div>
         <div class="popup" id="rules">
-          <p>The Big Bad Wolf and his pack have created weak points in the grid of tiles that you will need to keep safe. Click any tile to begin.</p>
-          <P>Safe tiles have numbers that indicate how many wolves are surrounding the tile. If you click on a wolf, you lose the game!</P>
-          <p>Right-click to lock the wolves away. The counter displays the number of wolves without locks, and a clock shows your time in seconds.</p>
-          <p>To reset the game, click on the little pig above the board. To choose the difficulty, select the type of house the wolfves' pack has to face.</p>
+          <p>The Big Bad Wolf and his pack have created weak points in the grid of tiles that you will need to keep
+            safe. Click any tile to begin.</p>
+          <P>Safe tiles have numbers that indicate how many wolves are surrounding the tile. If you click on a wolf, you
+            lose the game!</P>
+          <p>Right-click to lock the wolves away. The counter displays the number of wolves without locks, and a clock
+            shows your time in seconds.</p>
+          <p>To reset the game, click on the little pig above the board. To choose the difficulty, select the type of
+            house the wolfves' pack has to face.</p>
           <p>The game ends when all safe tiles have been opened.</p>
           <button class="close">Close</button>
         </div>
-      </div>
+        <div class="popup" id="custom-form">
+          <form action method="post" id="custom-difficulty">
+            <div>
+              <label for="width">Choose your custom width</label>
+              <input type="number" name="width" class="custom-width" min="6" max="32" placeholder="6-32" required>
+            </div>
+            <div>
+              <label for="height">Choose your custom height</label>
+              <input type="number" name="height" class="custom-height" min="6" max="16" placeholder="6-16" required>
+            </div>
+            <div>
+              <label for="bombsNbr">Choose the numbers of wolfves</label>
+              <input type="number" name="bombsNbr" class="custom-wolfs" min="1" max="80" placeholder="1-80" required>
+            </div>
+            <button class="close">Apply</button>
+          </form>
+        </div>
     </section>
     <footer>
       <button class="rules">Game Rules</button>
