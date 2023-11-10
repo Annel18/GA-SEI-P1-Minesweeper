@@ -35,6 +35,42 @@ let allCellClicked = []
 let time
 let interval
 
+class SurroundingCells {
+  constructor(cell) {
+    this.cell = cell
+    this.NW = this.cell - width - 1
+    this.N = this.cell - width
+    this.NE = this.cell - width + 1
+    this.E = this.cell + 1
+    this.SE = this.cell + width + 1
+    this.S = this.cell + width
+    this.SW = this.cell + width - 1
+    this.W = this.cell - 1
+  }
+
+  arrayOfSurroundingCells() {
+    if (this.cell === 0) { //Top Left Corner
+      return [this.E, this.S, this.SE]
+    } else if (this.cell === width - 1) { //Top Right Corner
+      return [this.S, this.W, this.SW]
+    } else if (this.cell === cellCount - 1) { //Bottom Right Corner
+      return [this.N, this.W, this.NW]
+    } else if (this.cell === cellCount - width) { //Bottom Left Corner
+      return [this.N, this.E, this.NE]
+    } else if (this.cell < width) { //First Row
+      return [this.E, this.S, this.W, this.SE, this.SW]
+    } else if ((this.cell + 1) % width === 0) { //Last Column
+      return [this.N, this.S, this.W, this.NW, this.SW]
+    } else if (this.cell >= cellCount - width) { //Bottom Row
+      return [this.N, this.E, this.W, this.NE, this.NW]
+    } else if (this.cell % width === 0) { //First Column
+      return [this.N, this.E, this.S, this.NE, this.SE]
+    } else { // midfield
+      return [this.N, this.E, this.S, this.W, this.NW, this.NE, this.SE, this.SW]
+    }
+  }
+}
+
 //! Grid
 
 function resetVariables() {
@@ -132,51 +168,6 @@ function customGrid(evt) {
   popupClose()
 }
 
-function dangerNbr(cell) {
-  let dangerCount = 0
-  const NW = cell - width - 1
-  const N = cell - width
-  const NE = cell - width + 1
-  const E = cell + 1
-  const SE = cell + width + 1
-  const S = cell + width
-  const SW = cell + width - 1
-  const W = cell - 1
-
-  function updateDangerCount(query) {
-    if (cells[query].classList.contains('bomb')) {
-      dangerCount++
-    }
-  }
-
-  if (cell === 0) { // console.log('topLeftCorner: ' + cell)
-    [E, SE, S].forEach(updateDangerCount)
-  } else if (cell === width - 1) { // console.log('topRigtCorner: ' + cell)
-    [S, SW, W].forEach(updateDangerCount)
-  } else if (cell === cellCount - 1) { // console.log('bottomRigtCorner: ' + cell)
-    [NW, N, W].forEach(updateDangerCount)
-  } else if (cell === cellCount - width) { // console.log('bottomLeftCorner: ' + cell)
-    [N, NE, E].forEach(updateDangerCount)
-  } else if (cell < width) { // console.log('first row: ' + cell)
-    [E, SE, S, SW, W].forEach(updateDangerCount)
-  } else if (cell >= cellCount - width) { // console.log('last row: ' + cell)
-    [NW, N, NE, E, W].forEach(updateDangerCount)
-  } else if (cell % width === 0) { // console.log('first column: ' + cell)
-    [N, NE, E, SE, S].forEach(updateDangerCount)
-  } else if ((cell + 1) % width === 0) { // console.log('last column: ' + cell)
-    [NW, N, S, SW, W].forEach(updateDangerCount)
-  } else { // console.log('midField: ' + cell)
-    [NW, N, NE, E, SE, S, SW, W].forEach(updateDangerCount)
-  }
-
-  cells[cell].innerText = dangerCount
-  // cells[cell].setAttribute('id', 'nbr' + dangerCount)
-
-  if (cells[cell].innerText > 0) {
-    cells[cell].classList.add('nbr')
-  }
-}
-
 function mineField() {
   const bombsArray = []
   let hotSpots = []
@@ -188,6 +179,27 @@ function mineField() {
       hotSpots = bombsArray.filter((value, index) => bombsArray.indexOf(value) === index)
       cells[index].classList.add('bomb')
     }
+  }
+}
+
+function dangerNbr(cell) {
+  let dangerCount = 0
+
+  const fieldInPlay = new SurroundingCells(cell)
+  const arrayToCheck = fieldInPlay.arrayOfSurroundingCells()
+
+  arrayToCheck.forEach(updateDangerCount)
+
+  function updateDangerCount(query) {
+    if (cells[query].classList.contains('bomb')) {
+      dangerCount++
+    }
+  }
+
+  cells[cell].innerText = dangerCount
+
+  if (cells[cell].innerText > 0) {
+    cells[cell].classList.add('nbr')
   }
 }
 
@@ -243,42 +255,6 @@ function reveal(event) {
   // console.log(allCellClicked[0])
 }
 
-class SurroundingCells {
-  constructor(cell) {
-    this.cell = cell
-    this.NW = this.cell - width - 1
-    this.N = this.cell - width
-    this.NE = this.cell - width + 1
-    this.E = this.cell + 1
-    this.SE = this.cell + width + 1
-    this.S = this.cell + width
-    this.SW = this.cell + width - 1
-    this.W = this.cell - 1
-  }
-
-  arrayOfSurroundingCells() {
-    if (this.cell === 0) { //Top Left Corner
-      return [this.E, this.S, this.SE]
-    } else if (this.cell === width - 1) { //Top Right Corner
-      return [this.S, this.W, this.SW]
-    } else if (this.cell === cellCount - 1) { //Bottom Right Corner
-      return [this.N, this.W, this.NW]
-    } else if (this.cell === cellCount - width) { //Bottom Left Corner
-      return [this.N, this.E, this.NE]
-    } else if (this.cell < width) { //First Row
-      return [this.E, this.S, this.W, this.SE, this.SW]
-    } else if ((this.cell + 1) % width === 0) { //Last Column
-      return [this.N, this.S, this.W, this.NW, this.SW]
-    } else if (this.cell >= cellCount - width) { //Bottom Row
-      return [this.N, this.E, this.W, this.NE, this.NW]
-    } else if (this.cell % width === 0) { //First Column
-      return [this.N, this.E, this.S, this.NE, this.SE]
-    } else { // midfield
-      return [this.N, this.E, this.S, this.W, this.NW, this.NE, this.SE, this.SW]
-    }
-  }
-}
-
 function openEmptyBubbles(cellClicked) {
   const cellClickedIndex = cells.indexOf(cellClicked)
 
@@ -292,7 +268,7 @@ function openEmptyBubbles(cellClicked) {
       cells[query].classList.replace('safeZone', 'safeZoneClicked')
       cells[query].removeEventListener('contextmenu', addFlag)
       fieldInPlay = new SurroundingCells(query)
-      arrayToCheck = fieldInPlay.arrayOfSurroundingCells(query)
+      arrayToCheck = fieldInPlay.arrayOfSurroundingCells()
       arrayToCheck.forEach(extendFieldToCheck)
     } if (cells[query].classList.contains('nbr')) {
       cells[query].classList.replace('nbr', 'nbrClicked')
