@@ -14,11 +14,8 @@ const customWidth = document.querySelector('.custom-width')
 const customHeight = document.querySelector('.custom-height')
 const customBombs = document.querySelector('.custom-wolfs')
 const applyButton = document.querySelector('.apply')
-let cells = []
-let allCellClicked = []
 
 //! Variables
-let time
 
 const levels = [
   { difficulty: 'BEGINNER', bombsNbr: 10, width: 8, height: 8 },
@@ -33,6 +30,9 @@ let height = levelChoice.height
 let cellCount = width * height
 let bombsNbr = levelChoice.bombsNbr
 let difficulty = levelChoice.difficulty
+let cells = []
+let allCellClicked = []
+let time
 let interval
 
 //! Grid
@@ -63,6 +63,7 @@ function createGrid() {
     cell.classList.add('cell')
     eventsOnCells()
   }
+
   mineField()
 
   for (let cell = 0; cell < cellCount; cell++) {
@@ -129,43 +130,6 @@ function customGrid(evt) {
   levels[3].bombsNbr = parseInt(customBombs.value)
   updateGrid(evt)
   popupClose()
-}
-
-
-class SurroundingCells {
-  constructor(cell) {
-    this.cell = cell
-    this.NW = this.cell - width - 1
-    this.N = this.cell - width
-    this.NE = this.cell - width + 1
-    this.E = this.cell + 1
-    this.SE = this.cell + width + 1
-    this.S = this.cell + width
-    this.SW = this.cell + width - 1
-    this.W = this.cell - 1
-  }
-
-  arrayOfSurroundingCells() {
-    if (this.cell === 0) { //Top Left Corner
-      return [this.E, this.S, this.SE]
-    } else if (this.cell === width - 1) { //Top Right Corner
-      return [this.S, this.W, this.SW]
-    } else if (this.cell === cellCount - 1) { //Bottom Right Corner
-      return [this.N, this.W, this.NW]
-    } else if (this.cell === cellCount - width) { //Bottom Left Corner
-      return [this.N, this.E, this.NE]
-    } else if (this.cell < width) { //First Row
-      return [this.E, this.S, this.W, this.SE, this.SW]
-    } else if ((this.cell + 1) % width === 0) { //Last Column
-      return [this.N, this.S, this.W, this.NW, this.SW]
-    } else if (this.cell >= cellCount - width) { //Bottom Row
-      return [this.N, this.E, this.W, this.NE, this.NW]
-    } else if (this.cell % width === 0) { //First Column
-      return [this.N, this.E, this.S, this.NE, this.SE]
-    } else { // midfield
-      return [this.N, this.E, this.S, this.W, this.NW, this.NE, this.SE, this.SW]
-    }
-  }
 }
 
 function dangerNbr(cell) {
@@ -239,21 +203,6 @@ function startGame() {
   }, 1000)
 }
 
-function winGame() {
-  const allCells = document.querySelectorAll('.cell')
-  const openCells = []
-  allCells.forEach(function (cell) {
-    if (cell.classList.contains('nbrClicked') || cell.classList.contains('flag') || cell.classList.contains('safeZoneClicked') || cell.classList.contains('bomb')) {
-      openCells.push(cell)
-      if (openCells.length === cellCount) {
-        clearInterval(interval)
-        difficultyDisplay.innerText = levelChoice.difficulty
-        document.getElementById('win').classList.add('popupDisplay')
-      }
-    }
-  })
-}
-
 function reveal(event) {
   startGame()
   const cellClicked = event.target
@@ -292,6 +241,42 @@ function reveal(event) {
     cellClicked.setAttribute('id', 'nbr' + cellClicked.innerText)
   }
   // console.log(allCellClicked[0])
+}
+
+class SurroundingCells {
+  constructor(cell) {
+    this.cell = cell
+    this.NW = this.cell - width - 1
+    this.N = this.cell - width
+    this.NE = this.cell - width + 1
+    this.E = this.cell + 1
+    this.SE = this.cell + width + 1
+    this.S = this.cell + width
+    this.SW = this.cell + width - 1
+    this.W = this.cell - 1
+  }
+
+  arrayOfSurroundingCells() {
+    if (this.cell === 0) { //Top Left Corner
+      return [this.E, this.S, this.SE]
+    } else if (this.cell === width - 1) { //Top Right Corner
+      return [this.S, this.W, this.SW]
+    } else if (this.cell === cellCount - 1) { //Bottom Right Corner
+      return [this.N, this.W, this.NW]
+    } else if (this.cell === cellCount - width) { //Bottom Left Corner
+      return [this.N, this.E, this.NE]
+    } else if (this.cell < width) { //First Row
+      return [this.E, this.S, this.W, this.SE, this.SW]
+    } else if ((this.cell + 1) % width === 0) { //Last Column
+      return [this.N, this.S, this.W, this.NW, this.SW]
+    } else if (this.cell >= cellCount - width) { //Bottom Row
+      return [this.N, this.E, this.W, this.NE, this.NW]
+    } else if (this.cell % width === 0) { //First Column
+      return [this.N, this.E, this.S, this.NE, this.SE]
+    } else { // midfield
+      return [this.N, this.E, this.S, this.W, this.NW, this.NE, this.SE, this.SW]
+    }
+  }
 }
 
 function openEmptyBubbles(cellClicked) {
@@ -334,6 +319,21 @@ function addFlag(event) {
   }
 }
 
+function winGame() {
+  const allCells = document.querySelectorAll('.cell')
+  const openCells = []
+  allCells.forEach(function (cell) {
+    if (cell.classList.contains('nbrClicked') || cell.classList.contains('flag') || cell.classList.contains('safeZoneClicked') || cell.classList.contains('bomb')) {
+      openCells.push(cell)
+      if (openCells.length === cellCount) {
+        clearInterval(interval)
+        difficultyDisplay.innerText = levelChoice.difficulty
+        document.getElementById('win').classList.add('popupDisplay')
+      }
+    }
+  })
+}
+
 function clearAllInterval() {
 }
 
@@ -342,6 +342,7 @@ function clearAllInterval() {
 for (const button of levelButtons) {
   button.addEventListener('click', updateGrid)
 }
+
 levelCustom.addEventListener('click', function () {
   customForm.classList.add('popupDisplay')
 })
