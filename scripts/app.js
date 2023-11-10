@@ -27,8 +27,6 @@ const levels = [
   { difficulty: 'CUSTOM', bombsNbr: 0, width: 0, height: 0 }
 ]
 
-
-
 let levelChoice = levels[0]
 let width = levelChoice.width
 let height = levelChoice.height
@@ -50,7 +48,6 @@ function resetVariables() {
   }
   bombsDisplay.innerText = bombsNbr
   resetButton.style.backgroundImage = 'url(images/reset.png)'
-  // gameActive = false
 }
 
 function createGrid() {
@@ -98,7 +95,7 @@ function createGrid() {
     gridContainer.style.backgroundImage = 'url(images/brick-bckgnd.jpeg)'
   } else if (levelChoice === levels[3]) {
     grid.style.width = `${(levels[3].width * 100 / 4).toString()}px`
-    grid.style.width = `${(levels[3].height * 100 / 4).toString()}px`
+    grid.style.height = `${(levels[3].height * 100 / 4).toString()}px`
     grid.style.backgroundImage = 'url(images/brick-house.jpeg)'
     gridContainer.style.backgroundImage = 'url(images/brick-bckgnd.jpeg)'
   }
@@ -183,7 +180,6 @@ function dangerNbr(cell) {
   const W = cell - 1
 
   function updateDangerCount(query) {
-    // console.log(cells[query])
     if (cells[query].classList.contains('bomb')) {
       dangerCount++
     }

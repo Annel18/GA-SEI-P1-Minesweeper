@@ -131,6 +131,10 @@ section {
   /* box-shadow: inset 3px 3px white, inset -3px -3px lightgrey; */
 }
 
+input{
+  width: fit-content;
+}
+
 footer {
   border-top: 1px solid var(--nbrColor1);;
   display: flex;
