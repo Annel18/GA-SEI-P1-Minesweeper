@@ -78,7 +78,7 @@ button:hover {
   margin: 0 2em 0 2em;
 }
 
-main {
+section {
   display: flex;
   flex-direction: column;
   width: 100%
@@ -300,11 +300,11 @@ footer button {
   .side1, .side2 {
     display: none;
   }
-  main {
+  section {
     padding: 1em;
     width: auto;
   }
-  section {
+  main {
     width: auto;
   }
   .grid-container{
@@ -329,12 +329,13 @@ footer button {
   .side1, .side2 {
     display: none;
   }
-  main {
+  section {
     padding: 1em;
     width: auto;
   }
-  section {
+  main {
     width: auto;
+    min-width: none;
     padding-right: 1em;
   }
   .grid-container{
