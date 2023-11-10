@@ -132,7 +132,8 @@ section {
 }
 
 input{
-  width: 4em;
+  width: -webkit-fill-available;
+  margin-bottom: 1em;
 }
 
 footer {
