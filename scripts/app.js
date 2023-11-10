@@ -2,17 +2,18 @@
 const grid = document.querySelector('.grid')
 const gridContainer = document.querySelector('.grid-container')
 const levelButtons = document.getElementsByClassName('levels')
-const levelCustom = document.querySelector('.customLevel')
 const resetButton = document.querySelector('#reset')
 const timeDisplay = document.querySelectorAll('#time')
 const difficultyDisplay = document.getElementById('difficulty')
 const bombsDisplay = document.querySelector('#bombsNbr')
 const rulesButton = document.querySelector('.rules')
 const closeButtons = document.querySelectorAll('.close')
+const levelCustom = document.querySelector('.levelCustom')
 const customForm = document.getElementById('custom-form')
 const customWidth = document.querySelector('.custom-width')
 const customHeight = document.querySelector('.custom-height')
 const customBombs = document.querySelector('.custom-wolfs')
+const applyButton = document.querySelector('.apply')
 let cells = []
 let allCellClicked = []
 
@@ -33,9 +34,8 @@ let width = levelChoice.width
 let height = levelChoice.height
 let cellCount = width * height
 let bombsNbr = levelChoice.bombsNbr
+let difficulty = levelChoice.difficulty
 let interval
-
-
 
 //! Grid
 
@@ -52,31 +52,6 @@ function resetVariables() {
   resetButton.style.backgroundImage = 'url(images/reset.png)'
   // gameActive = false
 }
-
-function updateGrid(evt) {
-  resetVariables()
-  if (evt.target.classList.contains('easy')) {
-    levelChoice = levels[0]
-  } else if (evt.target.classList.contains('hard')) {
-    levelChoice = levels[1]
-  } else if (evt.target.classList.contains('expert')) {
-    levelChoice = levels[2]
-  } else if (evt.target.classList.contains('custom')) {
-    customForm.classList.add('popupDisplay')
-    levels[3].width = parseInt(customWidth.value)
-    levels[3].height = parseInt(customHeight.value)
-    levels[3].bombsNbr = parseInt(customBombs.value)
-    // console.log(levels[3].width)
-    levelChoice = levels[3]
-  }
-
-  width = levelChoice.width
-  height = levelChoice.height
-  cellCount = width * height
-  bombsNbr = levelChoice.bombsNbr
-  createGrid()
-}
-
 
 function createGrid() {
   resetVariables()
@@ -107,8 +82,8 @@ function createGrid() {
   })
 
   if (levelChoice === levels[0]) {
-    grid.style.width = `${(levels[0].width * 100 / 4).toString()}px`
-    grid.style.height = `${(levels[0].height * 100 / 4).toString()}px`
+    grid.style.width = '200px'
+    grid.style.height = '200px'
     grid.style.backgroundImage = 'url(images/hay-house.jpeg)'
     gridContainer.style.backgroundImage = 'url(images/hayStack.jpeg)'
   } else if (levelChoice === levels[1]) {
@@ -127,6 +102,36 @@ function createGrid() {
     grid.style.backgroundImage = 'url(images/brick-house.jpeg)'
     gridContainer.style.backgroundImage = 'url(images/brick-bckgnd.jpeg)'
   }
+}
+
+function updateGrid(evt) {
+  resetVariables()
+  if (evt.target.classList.contains('easy')) {
+    levelChoice = levels[0]
+  } else if (evt.target.classList.contains('hard')) {
+    levelChoice = levels[1]
+  } else if (evt.target.classList.contains('expert')) {
+    levelChoice = levels[2]
+  } else if (evt.target.classList.contains('apply')) {
+    levelChoice = levels[3]
+  }
+
+  width = levelChoice.width
+  height = levelChoice.height
+  cellCount = width * height
+  bombsNbr = levelChoice.bombsNbr
+  difficulty = levelChoice.difficulty
+  createGrid()
+}
+
+function customGrid(evt) {
+  resetVariables()
+  evt.preventDefault()
+  levels[3].width = customWidth.value
+  levels[3].height = customHeight.value
+  levels[3].bombsNbr = customBombs.value
+  updateGrid(evt)
+  popupClose()
 }
 
 
@@ -183,21 +188,21 @@ function dangerNbr(cell) {
     }
   }
 
-  if (cell < width && cell % height === 0) { // console.log('topLeftCorner: ' + cell)
+  if (cell === 0) { // console.log('topLeftCorner: ' + cell)
     [E, SE, S].forEach(updateDangerCount)
-  } else if (cell < width && (cell + 1) % height === 0) { // console.log('topRigtCorner: ' + cell)
+  } else if (cell === width - 1) { // console.log('topRigtCorner: ' + cell)
     [S, SW, W].forEach(updateDangerCount)
-  } else if (cell >= cellCount - width && (cell + 1) % height === 0) { // console.log('bottomRigtCorner: ' + cell)
+  } else if (cell === cellCount - 1) { // console.log('bottomRigtCorner: ' + cell)
     [NW, N, W].forEach(updateDangerCount)
-  } else if (cell >= cellCount - width && cell % height === 0) { // console.log('bottomLeftCorner: ' + cell)
+  } else if (cell === cellCount - width) { // console.log('bottomLeftCorner: ' + cell)
     [N, NE, E].forEach(updateDangerCount)
   } else if (cell < width) { // console.log('first row: ' + cell)
     [E, SE, S, SW, W].forEach(updateDangerCount)
   } else if (cell >= cellCount - width) { // console.log('last row: ' + cell)
     [NW, N, NE, E, W].forEach(updateDangerCount)
-  } else if (cell % height === 0) { // console.log('first column: ' + cell)
+  } else if (cell % width === 0) { // console.log('first column: ' + cell)
     [N, NE, E, SE, S].forEach(updateDangerCount)
-  } else if ((cell + 1) % height === 0) { // console.log('last column: ' + cell)
+  } else if ((cell + 1) % width === 0) { // console.log('last column: ' + cell)
     [NW, N, S, SW, W].forEach(updateDangerCount)
   } else { // console.log('midField: ' + cell)
     [NW, N, NE, E, SE, S, SW, W].forEach(updateDangerCount)
@@ -336,10 +341,24 @@ function clearAllInterval() {
 }
 
 //! Events
+
 for (const button of levelButtons) {
   button.addEventListener('click', updateGrid)
 }
+levelCustom.addEventListener('click', function () {
+  customForm.classList.add('popupDisplay')
+})
+
+applyButton.addEventListener('click', customGrid)
+
 rulesButton.addEventListener('click', popupRules)
+
+function eventsOnCells() {
+  for (const cell of cells) {
+    cell.addEventListener('click', reveal)
+    cell.addEventListener('contextmenu', addFlag)
+  }
+}
 
 function popupRules() {
   document.getElementById('rules').classList.add('popupDisplay')
@@ -354,14 +373,6 @@ function popupClose() {
   document.getElementById('lost').classList.remove('popupDisplay')
   document.getElementById('win').classList.remove('popupDisplay')
   document.getElementById('custom-form').classList.remove('popupDisplay')
-}
-
-
-function eventsOnCells() {
-  for (const cell of cells) {
-    cell.addEventListener('click', reveal)
-    cell.addEventListener('contextmenu', addFlag)
-  }
 }
 
 resetButton.addEventListener('click', updateGrid)
