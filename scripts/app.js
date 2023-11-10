@@ -127,9 +127,9 @@ function updateGrid(evt) {
 function customGrid(evt) {
   resetVariables()
   evt.preventDefault()
-  levels[3].width = customWidth.value
-  levels[3].height = customHeight.value
-  levels[3].bombsNbr = customBombs.value
+  levels[3].width = parseInt(customWidth.value)
+  levels[3].height = parseInt(customHeight.value)
+  levels[3].bombsNbr = parseInt(customBombs.value)
   updateGrid(evt)
   popupClose()
 }
@@ -183,6 +183,7 @@ function dangerNbr(cell) {
   const W = cell - 1
 
   function updateDangerCount(query) {
+    // console.log(cells[query])
     if (cells[query].classList.contains('bomb')) {
       dangerCount++
     }
