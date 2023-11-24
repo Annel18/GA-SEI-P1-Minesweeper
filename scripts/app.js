@@ -35,6 +35,7 @@ let allCellClicked = []
 let time
 let interval
 
+
 class SurroundingCells {
   constructor(cell) {
     this.cell = cell
@@ -225,6 +226,7 @@ function reveal(event) {
     allCellClicked.push(cellClicked)
     if (allCellClicked[0].classList.contains('bombClicked')) {
       updateGrid(event)
+      reveal(event)
     } else {
       allBombs.forEach(function (item) {
         item.classList.replace('bomb', 'bombClicked')
@@ -257,7 +259,6 @@ function reveal(event) {
 
 function openEmptyBubbles(cellClicked) {
   const cellClickedIndex = cells.indexOf(cellClicked)
-
   let fieldInPlay = new SurroundingCells(cellClickedIndex)
   let arrayToCheck = fieldInPlay.arrayOfSurroundingCells()
 
@@ -266,6 +267,7 @@ function openEmptyBubbles(cellClicked) {
   function extendFieldToCheck(query) {
     while (cells[query].classList.contains('safeZone')) {
       cells[query].classList.replace('safeZone', 'safeZoneClicked')
+      cells[query].classList.remove('flag')
       cells[query].removeEventListener('contextmenu', addFlag)
       fieldInPlay = new SurroundingCells(query)
       arrayToCheck = fieldInPlay.arrayOfSurroundingCells()
@@ -326,16 +328,15 @@ levelCustom.addEventListener('click', function () {
 applyButton.addEventListener('click', customGrid)
 
 rulesButton.addEventListener('click', popupRules)
+function popupRules() {
+  document.getElementById('rules').classList.add('popupDisplay')
+}
 
 function eventsOnCells() {
   for (const cell of cells) {
     cell.addEventListener('click', reveal)
     cell.addEventListener('contextmenu', addFlag)
   }
-}
-
-function popupRules() {
-  document.getElementById('rules').classList.add('popupDisplay')
 }
 
 for (const button of closeButtons) {
