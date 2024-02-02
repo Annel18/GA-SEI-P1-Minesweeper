@@ -78,7 +78,7 @@ JavaScript
 ## Build/Code Process
 
 Day 1
-- Implemented the basic HTML and CSS to have to get started, and have an area on the page to host the grid that will be built through JS
+- Implemented the basic HTML and CSS to have to get started, and have an area on the page to host the grid that will be built through JS and defining the zones as per the wireframe’s layout
 - Created the various grid sized for each level in JS
     ```JS
     const levels = [
@@ -146,7 +146,8 @@ Day 2
 - Implemented the clock that counts the seconds until the end of the game
 
 Day 3
-- Figure out the recursive loop to open all the empty cells (the class ‘SurroundingCells’ has proven to be very helpful to implement this recursive loop)
+- Figure out the recursive loop to open all the empty cells (the class ‘SurroundingCells’ has proven to be very helpful to implement this recursive loop). This is the recursive function:
+
     ```JS
     function openEmptyBubbles(cellClicked) {
         const cellClickedIndex = cells.indexOf(cellClicked)
@@ -171,13 +172,27 @@ Day 3
         }
     }
     ```
-- Adding the flag function and decreasing the wolf count
+- Adding the flag function for when the player click right on a cell, and subsequently decreasing the wolf count
 - If the flag is removed, the wolf could should increase increase again
 - Disable left-click where the flag have been placed
 - Re-enable left-click if flag removed
 
 Day 4
 - Update the colour of the cells according to the numbers they are holding
+    - This has been implemented through CSS, using roots variables
+        ```js
+        :root {
+        --nbrColor1: #7bbdff;
+        --nbrColor2: #c7ff58;
+        --nbrColor3: #f84f37;
+        --nbrColor4: #ffb339;
+        --nbrColor5: #c472ff;
+        --nbrColor6: #76ffe6;
+        --nbrColor7: #ff6ab7;
+        --nbrColor8: #fcf934;
+        }
+        ```
+
 - Working out the winning conditions - when all safe cells have been opened
     ```JS
     function winGame() {
@@ -206,59 +221,61 @@ Day 5
 
 Day 6
 - Implementing the custom grid by asking the player to fill out a form and choose their own settings that will then be used in JavaScript to update the grid accordingly
-    ```HTML
-    <div class="popup" id="custom-form">
-        <form action method="post" id="custom-difficulty">
-        <div>
-            <label for="width">Choose your custom width</label>
-            <input type="number" name="width" class="custom-width" min="6" max="32" placeholder="6 < WIDTH > 32"
-            required>
+    - This is the HTML form popup
+        ```HTML
+        <div class="popup" id="custom-form">
+            <form action method="post" id="custom-difficulty">
+            <div>
+                <label for="width">Choose your custom width</label>
+                <input type="number" name="width" class="custom-width" min="6" max="32" placeholder="6 < WIDTH > 32"
+                required>
+            </div>
+            <div>
+                <label for="height">Choose your custom height</label>
+                <input type="number" name="height" class="custom-height" min="6" max="16" placeholder="6 < HEIGHT > 16"
+                required>
+            </div>
+            <div>
+                <label for="wolfs">Choose the numbers of wolfves</label>
+                <input type="number" name="wolfs" class="custom-wolfs" min="2" max="80"
+                placeholder="2 < WOLFVES > (width x height)" required>
+            </div>
+            <button class="close apply">Apply</button>
+            </form>
         </div>
-        <div>
-            <label for="height">Choose your custom height</label>
-            <input type="number" name="height" class="custom-height" min="6" max="16" placeholder="6 < HEIGHT > 16"
-            required>
-        </div>
-        <div>
-            <label for="wolfs">Choose the numbers of wolfves</label>
-            <input type="number" name="wolfs" class="custom-wolfs" min="2" max="80"
-            placeholder="2 < WOLFVES > (width x height)" required>
-        </div>
-        <button class="close apply">Apply</button>
-        </form>
-    </div>
-    ```
-    ```JS
-    function updateGrid(evt) {
-        resetVariables()
-        if (evt.target.classList.contains('easy')) {
-        levelChoice = levels[0]
-        } else if (evt.target.classList.contains('hard')) {
-        levelChoice = levels[1]
-        } else if (evt.target.classList.contains('expert')) {
-        levelChoice = levels[2]
-        } else if (evt.target.classList.contains('apply')) {
-        levelChoice = levels[3]
+        ```
+    - These are the functions that will build the customised grid and will update the parameters set for ```levels[3]``` defined above (see day1)
+        ```JS
+        function customGrid(evt) {
+            resetVariables()
+            evt.preventDefault()
+            levels[3].width = parseInt(customWidth.value)
+            levels[3].height = parseInt(customHeight.value)
+            levels[3].bombsNbr = parseInt(customBombs.value)
+            updateGrid(evt)
+            popupClose()
         }
+        function updateGrid(evt) {
+            resetVariables()
+            if (evt.target.classList.contains('easy')) {
+            levelChoice = levels[0]
+            } else if (evt.target.classList.contains('hard')) {
+            levelChoice = levels[1]
+            } else if (evt.target.classList.contains('expert')) {
+            levelChoice = levels[2]
+            } else if (evt.target.classList.contains('apply')) {
+            levelChoice = levels[3]
+            }
 
-        width = levelChoice.width
-        height = levelChoice.height
-        cellCount = width * height
-        bombsNbr = levelChoice.bombsNbr
-        difficulty = levelChoice.difficulty
-        createGrid()
-    }
-
-    function customGrid(evt) {
-        resetVariables()
-        evt.preventDefault()
-        levels[3].width = parseInt(customWidth.value)
-        levels[3].height = parseInt(customHeight.value)
-        levels[3].bombsNbr = parseInt(customBombs.value)
-        updateGrid(evt)
-        popupClose()
-    }
+            width = levelChoice.width
+            height = levelChoice.height
+            cellCount = width * height
+            bombsNbr = levelChoice.bombsNbr
+            difficulty = levelChoice.difficulty
+            createGrid()
+        }   
     ```
+## Game Snapshots
 - Various levels give various grid sizes
     ![level1](./README-images/level1.png)
     ![level2](./README-images/level2.png)
@@ -267,45 +284,57 @@ Day 6
 - The Game Rules call for this popup to appear
     ![rules](./README-images/rules.png)
 
-- If the player clicks on an empty cell - all empty cells around are revealed
+- When the player clicks on an empty cell - all empty cells around are revealed
     ![project1](./README-images/project1.png)
 
-- If the player clicks on a wolf - this message appears, encouraging you to try again
+- When the player clicks on a wolf - this message appears, encouraging you to try again
     ![loose](./README-images/loose.png)
 
-- If you manage to WIN - this popup message appears telling you your score (time in seconds) for which level
+- When you manage to WIN - this popup message appears telling you your score (time in seconds) for which level
     ![win](./README-images/win.png)
 
-- If you choose the custom level - this popup form asks you to enter your desired variables 
+- When you choose the custom level - this popup form asks you to enter your desired variables 
     ![custom](./README-images/custom.png)
 
 ## Challenges
 - Solving the recursive algorithm is what took me the longest, as expected. It was very satisfying when it ultimately worked and from that point onwards the game was playable.
 - The first click cannot be a mine, otherwise, the game is immediately lost. Implementing this condition took me longer than expected
-- Assigning the numbers according to their proximity to the wolves was also a challenge but not as much as the recursive algorithm
-- Implementing the winning conditions was harder than the losing one
+- Assigning the numbers according to their proximity to the wolves was also a challenge but not as much as the recursive algorithm. As for the latter, it has to query all 8 surrounding cells and then count how many of them are wolves
 - Removing the eventListeners when appropriate to avoid opening a cell that has been flagged
 - Implementing the custom options was also a challenge, the order in which the functions have to run is slightly different, as the player first has to fill in the form before the grid is regenerated.
 
-
 ## Wins
-My two biggest wins were the:
-- Recursive algorithm to reveal all surrounding empty cells (this was required as an MVP);
-- The customised grid;
-- The pop-up windows.
-
+My biggest wins were the:
+- Recursive algorithm to reveal all surrounding empty cells. This was a fundamental to the game, so it was a relief when the recursive loop worked and stopped crashing the browser;
+- The customised grid. I really wanted to implement this bonus, so I was thrilled when I managed to ```parseInt``` the data from the popup form successfully. 
+- The pop-up windows, made the interface of the game cleaner. I used these CSS classes and manipulated the DOM on the popup element to either add or remove the ```popupDisplay``` class
+    ```css
+    .popup {
+    display: none;
+    border-radius: 1em;
+    background-color: white;
+    border: 1px solid #478cd2;
+    padding: 2em;
+    position: absolute;
+    align-items: center;
+    width: 50%;
+    }
+    .popupDisplay {
+    display: block;
+    }
+    ```
 
 ## Key Learnings/Takeaways
-- Learned a lot about addEventListeners and removeEventListeners
-- Learned how to use flex-box to create a grid 
-- Made me think a lot about the construction of the recursive algorithm without creating an infinite loop. 
+As this is my first Vanilla JavaScript project, everything constitutes key learning. But these are my takeaways:
+- I learned a lot about addEventListeners and removeEventListeners and manipulated the DOM, but I'm also eager to learn about the React alternative.
+- I learned how to use flex-box to create a grid, and I imagine that these are some of the main CSS functionalities to lay out a website. 
+- It made me think a lot about the construction of the recursive algorithm without creating an infinite loop, as this was the main challenge of the game.
 
 
 ## Bugs
-None that I’m aware of at this stage. I should keep playing the game and I’m sure some funny bugs will appear in time.
+None that I’m aware of at this stage.
 
 ## Future Improvements
-
 - Due to the nature of the game it is difficult to have it working on mobile phones, the size of the grids is constrained by the number of cells and therefore is likely to be over the mobile device sizes. That being said, there is probably a way to generate grids within those constraints. 
-- Add sounds, not much though, minesweeper is not an arcade game and it doesn't really rely on sound effects to enhance its experience, but it could be a nice addition.
+- Add sounds, not much though, minesweeper is not an arcade game and it doesn't rely on sound effects to enhance its experience, but it could be a nice addition.
 
